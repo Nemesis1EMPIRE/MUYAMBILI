@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUYAMBILI - Votre plateforme de lecture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
     <!-- Background Image Fixe -->
@@ -31,7 +31,7 @@
         </div>
         
         <div class="topappbar-right">
-            <!-- Espace pour éléments futurs (notifications, etc.) -->
+            <!-- Espace pour éléments futurs -->
         </div>
     </header>
 
@@ -97,169 +97,8 @@
 
     <!-- Contenu Principal -->
     <main class="main-content">
-        <!-- Page d'Accueil -->
-        <section id="home-page" class="page active">
-            <div class="page-header">
-                <h1 class="page-title">Bienvenue sur MUYAMBILI</h1>
-                <p class="page-subtitle">Découvrez des milliers de livres gratuitement</p>
-            </div>
-
-            <!-- Section Livres Populaires -->
-            <div class="section">
-                <h2 class="section-title">Livres Populaires</h2>
-                <div id="featuredBooks" class="books-grid">
-                    <!-- Livres chargés dynamiquement -->
-                </div>
-            </div>
-
-            <!-- Section Nouveautés -->
-            <div class="section">
-                <h2 class="section-title">Nouveautés</h2>
-                <div id="newBooks" class="books-grid">
-                    <!-- Livres chargés dynamiquement -->
-                </div>
-            </div>
-
-            <!-- Section Genres -->
-            <div class="section">
-                <h2 class="section-title">Explorer par Genre</h2>
-                <div class="genres-grid">
-                    <div class="genre-card" data-genre="romance">
-                        <i class="fas fa-heart genre-icon"></i>
-                        <span>Romance</span>
-                    </div>
-                    <div class="genre-card" data-genre="science-fiction">
-                        <i class="fas fa-rocket genre-icon"></i>
-                        <span>Science-Fiction</span>
-                    </div>
-                    <div class="genre-card" data-genre="mystere">
-                        <i class="fas fa-search genre-icon"></i>
-                        <span>Mystère</span>
-                    </div>
-                    <div class="genre-card" data-genre="fantastique">
-                        <i class="fas fa-dragon genre-icon"></i>
-                        <span>Fantastique</span>
-                    </div>
-                    <div class="genre-card" data-genre="historique">
-                        <i class="fas fa-landmark genre-icon"></i>
-                        <span>Historique</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Page Bibliothèque -->
-        <section id="library-page" class="page">
-            <div class="page-header">
-                <h1 class="page-title">Bibliothèque</h1>
-                <p class="page-subtitle">Tous les livres disponibles</p>
-            </div>
-            <div class="library-controls">
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">Tous</button>
-                    <button class="filter-btn" data-filter="popular">Populaires</button>
-                    <button class="filter-btn" data-filter="new">Nouveautés</button>
-                </div>
-            </div>
-            <div id="allBooks" class="books-grid">
-                <!-- Tous les livres chargés dynamiquement -->
-            </div>
-        </section>
-
-        <!-- Page Compte -->
-        <section id="account-page" class="page">
-            <div class="page-header">
-                <h1 class="page-title">Mon Compte</h1>
-            </div>
-            <div id="accountContent">
-                <!-- Contenu du compte chargé dynamiquement -->
-                <div class="auth-required">
-                    <div class="auth-message">
-                        <i class="fas fa-user-lock auth-icon"></i>
-                        <h3>Connectez-vous à votre compte</h3>
-                        <p>Accédez à votre bibliothèque personnelle et à vos préférences</p>
-                        <button class="auth-btn" id="loginAccountBtn">
-                            <i class="fas fa-sign-in-alt"></i>
-                            Se connecter
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Page Contact -->
-        <section id="contact-page" class="page">
-            <div class="page-header">
-                <h1 class="page-title">Contact</h1>
-                <p class="page-subtitle">Nous sommes là pour vous aider</p>
-            </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope contact-icon"></i>
-                        <div>
-                            <h3>Email</h3>
-                            <p>contact@muyambili.com</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone contact-icon"></i>
-                        <div>
-                            <h3>Téléphone</h3>
-                            <p>+33 1 23 45 67 89</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt contact-icon"></i>
-                        <div>
-                            <h3>Adresse</h3>
-                            <p>123 Rue de la Lecture, Paris</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <form class="contact-form">
-                    <div class="form-group">
-                        <label for="contactName">Nom</label>
-                        <input type="text" id="contactName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactEmail">Email</label>
-                        <input type="email" id="contactEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactMessage">Message</label>
-                        <textarea id="contactMessage" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-paper-plane"></i>
-                        Envoyer le message
-                    </button>
-                </form>
-            </div>
-        </section>
+        <!-- Les pages seront chargées dynamiquement -->
     </main>
-
-    <!-- Modal de Recherche Avancée -->
-    <div id="searchModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Résultats de recherche</h2>
-            <div id="searchResults" class="search-results">
-                <!-- Résultats de recherche -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal d'Authentification -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="authForms">
-                <!-- Forms de connexion/inscription -->
-            </div>
-        </div>
-    </div>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
