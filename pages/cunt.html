@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUYAMBILI - Votre plateforme de lecture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <!-- Background Image Fixe -->
@@ -106,12 +106,12 @@
                 </div>
 
                 <div class="auth-buttons">
-                    <button class="auth-btn signin-btn">
+                    <button class="auth-btn signin-btn" onclick="openAuthModal('login')">
                         <i class="fas fa-sign-in-alt"></i>
                         Se connecter
                     </button>
                     
-                    <button class="auth-btn signup-btn">
+                    <button class="auth-btn signup-btn" onclick="openAuthModal('signup')">
                         <i class="fas fa-user-plus"></i>
                         S'inscrire
                     </button>
@@ -125,11 +125,11 @@
         <div class="auth-container">
             <div class="auth-background"></div>
             <div class="auth-form-container">
-                <span class="close-modal">&times;</span>
+                <span class="close-modal" onclick="closeAuthModal()">&times;</span>
                 
                 <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">Connexion</button>
-                    <button class="auth-tab" data-tab="signup">Inscription</button>
+                    <button class="auth-tab active" data-tab="login" onclick="switchToTab('login')">Connexion</button>
+                    <button class="auth-tab" data-tab="signup" onclick="switchToTab('signup')">Inscription</button>
                 </div>
 
                 <!-- Formulaire Connexion -->
@@ -193,11 +193,39 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <script>
+        function openAuthModal(tab) {
+            document.getElementById('authModal').style.display = 'block';
+            switchToTab(tab);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function switchToTab(tabName) {
+            // Mettre à jour les tabs
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+
+            // Mettre à jour les forms
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.toggle('active', form.id === tabName + 'Form');
+            });
+        }
+
+        // Fermer modal en cliquant en dehors
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target.id === 'authModal') {
+                closeAuthModal();
+            }
+        });
+    </script>
+
+    <!-- Scripts Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
     <script src="../js/supabase.js"></script>
     <script src="../js/auth.js"></script>
-    <script src="../js/books.js"></script>
-    <script src="../js/app.js"></script>
 </body>
 </html>
