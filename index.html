@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUYAMBILI - Votre plateforme de lecture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
     <!-- Background Image Fixe -->
@@ -97,51 +97,39 @@
 
     <!-- Contenu Principal -->
     <main class="main-content">
-        <!-- Carousel -->
-        <section class="carousel-section">
+        <!-- Hero Carousel -->
+        <section class="hero-carousel">
             <div class="carousel-container">
                 <div class="carousel-slides">
                     <div class="carousel-slide active">
                         <div class="slide-content">
-                            <h2>Découvrez des milliers de livres</h2>
-                            <p>Plongez dans un univers de lecture illimité</p>
-                            <button class="carousel-btn">Explorer</button>
-                        </div>
-                        <div class="slide-image">
-                            <i class="fas fa-book-open"></i>
+                            <h1>Découvrez des milliers de livres</h1>
+                            <p>Plongez dans un univers de lecture illimité avec MUYAMBILI</p>
+                            <button class="hero-btn">Commencer à lire</button>
                         </div>
                     </div>
                     
                     <div class="carousel-slide">
                         <div class="slide-content">
-                            <h2>Lecture sur tous vos appareils</h2>
+                            <h1>Lecture sur tous vos appareils</h1>
                             <p>Continuez votre lecture où que vous soyez</p>
-                            <button class="carousel-btn">Découvrir</button>
-                        </div>
-                        <div class="slide-image">
-                            <i class="fas fa-mobile-alt"></i>
+                            <button class="hero-btn">Découvrir l'app</button>
                         </div>
                     </div>
                     
                     <div class="carousel-slide">
                         <div class="slide-content">
-                            <h2>Recommandations personnalisées</h2>
-                            <p>Des livres adaptés à vos goûts</p>
-                            <button class="carousel-btn">Voir plus</button>
-                        </div>
-                        <div class="slide-image">
-                            <i class="fas fa-star"></i>
+                            <h1>Recommandations personnalisées</h1>
+                            <p>Des livres adaptés à vos goûts de lecture</p>
+                            <button class="hero-btn">Explorer</button>
                         </div>
                     </div>
                     
                     <div class="carousel-slide">
                         <div class="slide-content">
-                            <h2>Rejoignez notre communauté</h2>
+                            <h1>Rejoignez notre communauté</h1>
                             <p>Partagez vos lectures et découvrez-en de nouvelles</p>
-                            <button class="carousel-btn">Rejoindre</button>
-                        </div>
-                        <div class="slide-image">
-                            <i class="fas fa-users"></i>
+                            <button class="hero-btn">S'inscrire</button>
                         </div>
                     </div>
                 </div>
@@ -166,7 +154,7 @@
 
         <!-- Section À propos -->
         <section class="about-section">
-            <div class="about-container">
+            <div class="container">
                 <h2 class="section-title">À propos de nous</h2>
                 <div class="about-content">
                     <div class="about-text">
@@ -204,12 +192,11 @@
 
         <!-- Section Nouveautés -->
         <section class="new-releases-section">
-            <div class="section-container">
+            <div class="container">
                 <h2 class="section-title">Nouveautés</h2>
                 <p class="section-subtitle">Découvrez les derniers livres ajoutés</p>
                 
-                <div class="books-grid" id="newBooksGrid">
-                    <!-- Livres chargés dynamiquement -->
+                <div class="books-grid">
                     <div class="book-card">
                         <div class="book-cover new-badge">
                             <i class="fas fa-book"></i>
@@ -255,7 +242,7 @@
 
         <!-- Section Recommandations -->
         <section class="recommendations-section">
-            <div class="section-container">
+            <div class="container">
                 <h2 class="section-title">Recommandations</h2>
                 <p class="section-subtitle">Des sélections faites spécialement pour vous</p>
                 
@@ -267,15 +254,19 @@
                                 <div class="book-cover">
                                     <i class="fas fa-heart"></i>
                                 </div>
-                                <h4>Amour Éternel</h4>
-                                <p>Clara Martin</p>
+                                <div class="book-info">
+                                    <h4>Amour Éternel</h4>
+                                    <p>Clara Martin</p>
+                                </div>
                             </div>
                             <div class="book-card small">
                                 <div class="book-cover">
                                     <i class="fas fa-heart"></i>
                                 </div>
-                                <h4>Passion Secrète</h4>
-                                <p>Thomas Leroy</p>
+                                <div class="book-info">
+                                    <h4>Passion Secrète</h4>
+                                    <p>Thomas Leroy</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -287,15 +278,19 @@
                                 <div class="book-cover">
                                     <i class="fas fa-dragon"></i>
                                 </div>
-                                <h4>Le Royaume Oublié</h4>
-                                <p>Arthur King</p>
+                                <div class="book-info">
+                                    <h4>Le Royaume Oublié</h4>
+                                    <p>Arthur King</p>
+                                </div>
                             </div>
                             <div class="book-card small">
                                 <div class="book-cover">
                                     <i class="fas fa-dragon"></i>
                                 </div>
-                                <h4>La Prophétie</h4>
-                                <p>Élise Merlin</p>
+                                <div class="book-info">
+                                    <h4>La Prophétie</h4>
+                                    <p>Élise Merlin</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -307,15 +302,19 @@
                                 <div class="book-cover">
                                     <i class="fas fa-search"></i>
                                 </div>
-                                <h4>L'Énigme du Manoir</h4>
-                                <p>Victor Holmes</p>
+                                <div class="book-info">
+                                    <h4>L'Énigme du Manoir</h4>
+                                    <p>Victor Holmes</p>
+                                </div>
                             </div>
                             <div class="book-card small">
                                 <div class="book-cover">
                                     <i class="fas fa-search"></i>
                                 </div>
-                                <h4>Meurtre à Venise</h4>
-                                <p>Lisa Colombo</p>
+                                <div class="book-info">
+                                    <h4>Meurtre à Venise</h4>
+                                    <p>Lisa Colombo</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -327,15 +326,19 @@
                                 <div class="book-cover">
                                     <i class="fas fa-rocket"></i>
                                 </div>
-                                <h4>Galaxy Quest</h4>
-                                <p>Neil Cosmos</p>
+                                <div class="book-info">
+                                    <h4>Galaxy Quest</h4>
+                                    <p>Neil Cosmos</p>
+                                </div>
                             </div>
                             <div class="book-card small">
                                 <div class="book-cover">
                                     <i class="fas fa-rocket"></i>
                                 </div>
-                                <h4>Le Paradoxe Temporel</h4>
-                                <p>Sarah Time</p>
+                                <div class="book-info">
+                                    <h4>Le Paradoxe Temporel</h4>
+                                    <p>Sarah Time</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -352,11 +355,9 @@
         const totalSlides = slides.length;
 
         function showSlide(index) {
-            // Masquer toutes les slides
             slides.forEach(slide => slide.classList.remove('active'));
             indicators.forEach(indicator => indicator.classList.remove('active'));
             
-            // Afficher la slide courante
             slides[index].classList.add('active');
             indicators[index].classList.add('active');
             currentSlide = index;
