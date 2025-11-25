@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUYAMBILI - Bibliothèque</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+    <!-- Background Image Fixe -->
+    <div class="background-image"></div>
+
+    <!-- Top App Bar -->
+    <header class="topappbar">
+        <div class="topappbar-left">
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="MUYAMBILI Logo" class="logo-image">
+                <span class="logo-text">MUYAMBILI</span>
+            </div>
+        </div>
+        
+        <div class="topappbar-center">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher un livre, auteur ou genre...">
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="topappbar-right">
+            <!-- Espace pour éléments futurs -->
+        </div>
+    </header>
+
+    <!-- Navigation Latérale (Desktop) -->
+    <nav class="sidebar">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span class="nav-text">Accueil</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="library.html" class="nav-link active">
+                    <i class="fas fa-book nav-icon"></i>
+                    <span class="nav-text">Livres</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="account.html" class="nav-link">
+                    <i class="fas fa-user nav-icon"></i>
+                    <span class="nav-text">Compte</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="contact.html" class="nav-link">
+                    <i class="fas fa-envelope nav-icon"></i>
+                    <span class="nav-text">Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Navigation Mobile (Bottom) -->
+    <nav class="bottom-nav">
+        <ul class="bottom-nav-menu">
+            <li class="nav-item">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span class="nav-text">Accueil</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="library.html" class="nav-link active">
+                    <i class="fas fa-book nav-icon"></i>
+                    <span class="nav-text">Livres</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="account.html" class="nav-link">
+                    <i class="fas fa-user nav-icon"></i>
+                    <span class="nav-text">Compte</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="contact.html" class="nav-link">
+                    <i class="fas fa-envelope nav-icon"></i>
+                    <span class="nav-text">Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <main class="main-content">
+        <section class="library-page">
+            <div class="container">
+                <!-- En-tête de la bibliothèque -->
+                <div class="library-header">
+                    <h1 class="page-title">Notre Bibliothèque</h1>
+                    <p class="page-subtitle">Découvrez tous nos livres disponibles</p>
+                </div>
+
+                <!-- Filtres et recherche -->
+                <div class="library-filters">
+                    <div class="filter-group">
+                        <label for="genreFilter">Genre :</label>
+                        <select id="genreFilter" class="filter-select">
+                            <option value="all">Tous les genres</option>
+                            <option value="romance">Romance</option>
+                            <option value="science-fiction">Science-Fiction</option>
+                            <option value="fantastique">Fantastique</option>
+                            <option value="mystere">Mystère</option>
+                            <option value="historique">Historique</option>
+                            <option value="biographie">Biographie</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="sortFilter">Trier par :</label>
+                        <select id="sortFilter" class="filter-select">
+                            <option value="newest">Plus récents</option>
+                            <option value="oldest">Plus anciens</option>
+                            <option value="title">Titre (A-Z)</option>
+                            <option value="author">Auteur (A-Z)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-stats">
+                        <span id="booksCount">0 livres trouvés</span>
+                    </div>
+                </div>
+
+                <!-- Grille des livres -->
+                <div class="books-grid" id="booksGrid">
+                    <!-- Les livres seront chargés ici dynamiquement -->
+                    <div class="loading-books">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Chargement des livres...</p>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination">
+                    <!-- La pagination sera générée dynamiquement -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de détail du livre -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content book-modal">
+            <span class="close-modal" onclick="closeBookModal()">&times;</span>
+            <div class="book-modal-content" id="bookModalContent">
+                <!-- Contenu du livre chargé dynamiquement -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration Supabase
+        const SUPABASE_URL = 'https://ton-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'ton-anon-key-tres-long';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Variables globales
+        let allBooks = [];
+        let currentPage = 1;
+        const booksPerPage = 12;
+        let currentFilters = {
+            genre: 'all',
+            sort: 'newest',
+            search: ''
+        };
+
+        // Charger les livres au démarrage
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBooks();
+            setupEventListeners();
+        });
+
+        // Configurer les écouteurs d'événements
+        function setupEventListeners() {
+            // Filtres
+            document.getElementById('genreFilter').addEventListener('change', function() {
+                currentFilters.genre = this.value;
+                currentPage = 1;
+                loadBooks();
+            });
+
+            document.getElementById('sortFilter').addEventListener('change', function() {
+                currentFilters.sort = this.value;
+                currentPage = 1;
+                loadBooks();
+            });
+
+            // Recherche
+            document.getElementById('searchInput').addEventListener('input', function() {
+                currentFilters.search = this.value.toLowerCase();
+                currentPage = 1;
+                loadBooks();
+            });
+
+            document.getElementById('searchBtn').addEventListener('click', function() {
+                currentFilters.search = document.getElementById('searchInput').value.toLowerCase();
+                currentPage = 1;
+                loadBooks();
+            });
+        }
+
+        // Charger les livres depuis Supabase
+        async function loadBooks() {
+            try {
+                showLoading();
+                
+                let query = supabase
+                    .from('books')
+                    .select('*')
+                    .eq('is_public', true);
+
+                // Appliquer le tri
+                switch(currentFilters.sort) {
+                    case 'newest':
+                        query = query.order('created_at', { ascending: false });
+                        break;
+                    case 'oldest':
+                        query = query.order('created_at', { ascending: true });
+                        break;
+                    case 'title':
+                        query = query.order('title', { ascending: true });
+                        break;
+                    case 'author':
+                        query = query.order('author', { ascending: true });
+                        break;
+                }
+
+                const { data: books, error } = await query;
+
+                if (error) throw error;
+
+                allBooks = books || [];
+                displayBooks();
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des livres:', error);
+                showError('Erreur lors du chargement des livres');
+            }
+        }
+
+        // Afficher les livres
+        function displayBooks() {
+            let filteredBooks = filterBooks(allBooks);
+            const totalBooks = filteredBooks.length;
+            const totalPages = Math.ceil(totalBooks / booksPerPage);
+            
+            // Mettre à jour le compteur
+            document.getElementById('booksCount').textContent = `${totalBooks} livre${totalBooks > 1 ? 's' : ''} trouvé${totalBooks > 1 ? 's' : ''}`;
+            
+            // Pagination
+            const startIndex = (currentPage - 1) * booksPerPage;
+            const endIndex = startIndex + booksPerPage;
+            const booksToShow = filteredBooks.slice(startIndex, endIndex);
+            
+            // Afficher la grille
+            const booksGrid = document.getElementById('booksGrid');
+            
+            if (booksToShow.length === 0) {
+                booksGrid.innerHTML = `
+                    <div class="no-books">
+                        <i class="fas fa-book-open"></i>
+                        <h3>Aucun livre trouvé</h3>
+                        <p>Essayez de modifier vos critères de recherche</p>
+                    </div>
+                `;
+            } else {
+                booksGrid.innerHTML = booksToShow.map(book => `
+                    <div class="book-card" onclick="openBookModal('${book.id}')">
+                        <div class="book-cover">
+                            ${book.cover_url ? 
+                                `<img src="${book.cover_url}" alt="${book.title}" onerror="this.style.display='none'">` : 
+                                '<i class="fas fa-book"></i>'
+                            }
+                            ${isNewBook(book) ? '<span class="badge new">Nouveau</span>' : ''}
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">${book.title}</h3>
+                            <p class="book-author">${book.author}</p>
+                            ${book.category ? `<span class="book-genre">${book.category}</span>` : ''}
+                            ${book.description ? `<p class="book-description">${book.description.substring(0, 100)}...</p>` : ''}
+                        </div>
+                        <button class="read-btn" onclick="event.stopPropagation(); readBook('${book.id}')">
+                            <i class="fas fa-play"></i>
+                            Lire
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            // Afficher la pagination
+            displayPagination(totalPages);
+        }
+
+        // Filtrer les livres
+        function filterBooks(books) {
+            return books.filter(book => {
+                // Filtre par genre
+                if (currentFilters.genre !== 'all' && book.category !== currentFilters.genre) {
+                    return false;
+                }
+                
+                // Filtre par recherche
+                if (currentFilters.search) {
+                    const searchTerm = currentFilters.search.toLowerCase();
+                    return book.title.toLowerCase().includes(searchTerm) || 
+                           book.author.toLowerCase().includes(searchTerm) ||
+                           (book.description && book.description.toLowerCase().includes(searchTerm));
+                }
+                
+                return true;
+            });
+        }
+
+        // Vérifier si un livre est nouveau (moins de 7 jours)
+        function isNewBook(book) {
+            const bookDate = new Date(book.created_at);
+            const now = new Date();
+            const diffTime = Math.abs(now - bookDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays <= 7;
+        }
+
+        // Afficher la pagination
+        function displayPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Bouton précédent
+            if (currentPage > 1) {
+                paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage - 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </button>`;
+            }
+            
+            // Pages
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `<span class="page-number active">${i}</span>`;
+                } else {
+                    paginationHTML += `<button class="page-number" onclick="changePage(${i})">${i}</button>`;
+                }
+            }
+            
+            // Bouton suivant
+            if (currentPage < totalPages) {
+                paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage + 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </button>`;
+            }
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Changer de page
+        function changePage(page) {
+            currentPage = page;
+            displayBooks();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Ouvrir le modal du livre
+        async function openBookModal(bookId) {
+            try {
+                const { data: book, error } = await supabase
+                    .from('books')
+                    .select('*')
+                    .eq('id', bookId)
+                    .single();
+
+                if (error) throw error;
+
+                const modalContent = document.getElementById('bookModalContent');
+                modalContent.innerHTML = `
+                    <div class="book-detail">
+                        <div class="book-detail-cover">
+                            ${book.cover_url ? 
+                                `<img src="${book.cover_url}" alt="${book.title}">` : 
+                                '<i class="fas fa-book"></i>'
+                            }
+                        </div>
+                        <div class="book-detail-info">
+                            <h2>${book.title}</h2>
+                            <p class="book-author">${book.author}</p>
+                            ${book.category ? `<span class="book-genre large">${book.category}</span>` : ''}
+                            
+                            ${book.publication_year ? `<p><strong>Année:</strong> ${book.publication_year}</p>` : ''}
+                            
+                            ${book.description ? `
+                                <div class="book-description-full">
+                                    <h4>Description</h4>
+                                    <p>${book.description}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="book-actions">
+                                <button class="read-btn large" onclick="readBook('${book.id}')">
+                                    <i class="fas fa-play"></i>
+                                    Commencer la lecture
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('bookModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement du livre:', error);
+                alert('Erreur lors du chargement du livre');
+            }
+        }
+
+        // Fermer le modal du livre
+        function closeBookModal() {
+            document.getElementById('bookModal').style.display = 'none';
+        }
+
+        // Lire un livre
+        function readBook(bookId) {
+            // Rediriger vers la page de lecture
+            window.location.href = `reader.html?book=${bookId}`;
+        }
+
+        // États de chargement
+        function showLoading() {
+            document.getElementById('booksGrid').innerHTML = `
+                <div class="loading-books">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Chargement des livres...</p>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('booksGrid').innerHTML = `
+                <div class="error-books">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Erreur</h3>
+                    <p>${message}</p>
+                    <button onclick="loadBooks()" class="retry-btn">Réessayer</button>
+                </div>
+            `;
+        }
+
+        // Fermer le modal en cliquant en dehors
+        document.getElementById('bookModal').addEventListener('click', function(e) {
+            if (e.target.id === 'bookModal') {
+                closeBookModal();
+            }
+        });
+    </script>
+</body>
+</html>
