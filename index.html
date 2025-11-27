@@ -9,60 +9,72 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    :root{
-      --bg:#f6f7fb; --card:#ffffff; --muted:#6b7280; --accent:#2563eb; --glass: rgba(255,255,255,0.6);
-      --sidebar-w:84px; --radius:14px;
-    }
-    *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,Arial; margin:0; background:linear-gradient(180deg,#f6f7fb 0%, #eef2ff 100%); color:#0f172a}
-    a{color:inherit; text-decoration:none}
-    /* Layout */
-    .app{display:grid; grid-template-columns: var(--sidebar-w) 1fr; min-height:100vh}
-    header{position:sticky; top:0; z-index:30; backdrop-filter: blur(6px); background:transparent}
-    /* Sidebar (desktop) */
-    .sidebar{width:var(--sidebar-w); background:transparent; display:flex; flex-direction:column; gap:8px; padding:14px}
-    .logo{height:48px; display:flex; align-items:center; justify-content:center}
-    .nav-btn{display:flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:12px; background:transparent; color:var(--accent); cursor:pointer}
-    .nav-btn.active{background:linear-gradient(180deg, rgba(37,99,235,0.12), rgba(37,99,235,0.06)); box-shadow:0 6px 18px rgba(16,24,40,0.06)}
-    /* Main column */
-    .main{padding:18px 18px 60px}
-    .topbar{display:flex; gap:12px; align-items:center}
-    .search{flex:1; display:flex; gap:8px; align-items:center; background:var(--card); padding:8px; border-radius:12px; box-shadow:0 6px 18px rgba(16,24,40,0.04)}
-    .search input{border:0; outline:0; font-size:14px; flex:1}
-    .filters{display:flex; gap:6px}
-    .chip{padding:6px 10px; border-radius:999px; background:#eef2ff; color:var(--accent); font-weight:600; font-size:13px}
-    /* Grid */
-    .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:14px; margin-top:18px}
-    .card{background:var(--card); border-radius:12px; padding:12px; box-shadow:0 6px 20px rgba(15,23,42,0.04)}
-    .cover{height:140px; border-radius:8px; background:linear-gradient(180deg,#ddd,#bbb); display:flex; align-items:end; padding:8px; color:white; font-weight:700}
-    .meta{display:flex; justify-content:space-between; align-items:center; margin-top:10px}
-    .title{font-weight:700}
-    .subtitle{color:var(--muted); font-size:13px}
-    /* Carousel */
-    .carousel{display:flex; gap:12px; overflow:auto; padding-bottom:6px}
-    .carousel .card{min-width:300px}
-    /* Description / reading view */
-    .panel{background:var(--card); padding:16px; border-radius:12px; margin-top:12px}
-    .chapter{padding:14px; border-radius:10px; background:linear-gradient(180deg,#fff,#fbfdff); margin-top:8px}
-    .comment{border-top:1px solid #eee; padding:10px 0}
-    /* Account */
-    .account-list{display:flex; flex-direction:column; gap:10px}
-    .history-item{display:flex; gap:10px; align-items:center}
-    .favicon{width:44px; height:44px; border-radius:8px; background:#e8eefc; display:flex; align-items:center; justify-content:center; font-weight:700}
-    /* Responsive: mobile - move sidebar to bottom */
-    @media (max-width:900px){
-      .app{grid-template-columns: 1fr}
-      .sidebar{position:fixed; bottom:10px; left:50%; transform:translateX(-50%); flex-direction:row; gap:10px; padding:8px; background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75)); border-radius:999px; box-shadow:0 6px 20px rgba(2,6,23,0.12)}
-      .main{padding:12px 12px 120px}
-      .logo{display:none}
-    }
-    /* small niceties */
-    .muted{color:var(--muted)}
-    .btn{padding:8px 12px; border-radius:10px; background:var(--accent); color:white; border:0; cursor:pointer}
-    .btn.ghost{background:transparent; color:var(--accent); border:1px solid rgba(37,99,235,0.12)}
-    .views{font-size:13px; color:var(--muted)}
-    .comments-list{max-height:240px; overflow:auto}
-  </style>
+/* --- Global Reset --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { font-family: "Inter", sans-serif; background: #f4f5f7; color: #222; height: 100%; }
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; outline: none; }
+
+/* --- Layout --- */
+#app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+
+/* Sidebar (Desktop) */
+.sidebar { width: 80px; background: #111; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+.sidebar i { font-size: 24px; color: #888; transition: 0.3s; }
+.sidebar i:hover { color: #fff; transform: scale(1.15); }
+
+/* Bottom bar (Mobile) */
+@media (max-width: 800px) {
+  .sidebar { display: none; }
+  .mobile-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #111; display: flex; justify-content: space-around; align-items: center; }
+  .mobile-nav i { color: #bbb; font-size: 26px; }
+}
+
+/* Main Content */
+.main { flex: 1; overflow-y: auto; padding: 25px; }
+.page-title { font-size: 32px; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; }
+
+/* Search */
+.search-bar { width: 100%; max-width: 600px; margin: 0 auto 25px; display: flex; align-items: center; background: #fff; padding: 12px 18px; border-radius: 14px; box-shadow: 0px 4px 12px rgba(0,0,0,0.08); }
+.search-bar input { flex: 1; font-size: 16px; border: none; outline: none; }
+.search-bar i { color: #555; font-size: 20px; margin-left: 8px; }
+
+/* Carousel */
+.carousel { display: flex; gap: 18px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
+.carousel-item { min-width: 200px; background: #fff; border-radius: 18px; padding: 18px; scroll-snap-align: start; box-shadow: 0px 6px 20px rgba(0,0,0,0.08); transition: .25s; }
+.carousel-item:hover { transform: translateY(-4px); }
+
+/* Cards */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 22px; padding: 10px 0; }
+.card { background: #fff; padding: 18px; border-radius: 18px; box-shadow: 0px 4px 16px rgba(0,0,0,0.07); transition: .25s; }
+.card:hover { transform: translateY(-6px); }
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.card-meta { font-size: 14px; color: #666; margin-bottom: 10px; }
+.card-views { font-size: 13px; color:#0077ff; font-weight:700; }
+
+/* Description Page */
+.desc-container { background: #fff; padding: 25px; border-radius: 18px; box-shadow: 0px 4px 16px rgba(0,0,0,0.07); max-width: 900px; margin: auto; }
+.desc-title { font-size: 30px; font-weight: 800; margin-bottom: 10px; }
+.desc-info { font-size: 15px; color: #555; margin-bottom: 20px; }
+.read-btn { padding: 12px 20px; background: #0077ff; color: white; border-radius: 10px; font-size: 16px; font-weight: 600; }
+.read-btn:hover { background: #005ce0; }
+
+/* Reading Page */
+.read-page { background: #fff; padding: 25px; border-radius: 18px; box-shadow: 0px 4px 16px rgba(0,0,0,0.07); max-width: 900px; margin: auto; line-height: 1.7; font-size: 17px; }
+
+/* Comments */
+.comment-box { margin-top: 25px; background: #fafafa; padding: 18px; border-radius: 12px; }
+.comment-box textarea { width: 100%; height: 85px; border-radius: 10px; padding: 10px; border: 1px solid #ccc; outline: none; }
+.comment { background: #fff; padding: 10px 12px; margin-top: 10px; border-radius: 10px; box-shadow: 0px 2px 6px rgba(0,0,0,0.05); }
+
+/* Account Page */
+.history-item { background: #fff; padding: 14px; border-radius: 12px; margin-bottom: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }
+
+/* Scrollbar */
+::-webkit-scrollbar { height: 6px; width: 6px; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+</style>
 </head>
 <body>
   <div class="app">
