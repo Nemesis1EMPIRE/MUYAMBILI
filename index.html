@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Library - Read Novels, Manga & Articles</title>
+    <title>ReadHub - Your Reading Companion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -12,13 +12,9 @@
             --accent-color: #e74c3c;
             --light-color: #ecf0f1;
             --dark-color: #2c3e50;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
             --text-color: #333;
-            --bg-color: #f9f9f9;
-            --card-bg: #ffffff;
-            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
 
@@ -30,317 +26,368 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: #f5f7fa;
             color: var(--text-color);
             line-height: 1.6;
         }
 
-        /* Layout */
-        .container {
-            display: flex;
-            min-height: 100vh;
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* Sidebar (Desktop) */
-        .sidebar {
-            width: 250px;
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 20px 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            transition: var(--transition);
-            z-index: 1000;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
         }
 
         .logo {
-            text-align: center;
-            padding: 0 20px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .logo h1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 1.5rem;
-            color: var(--light-color);
-        }
-
-        .logo span {
+            font-weight: 700;
             color: var(--primary-color);
         }
 
-        .nav-links {
-            list-style: none;
-            padding: 0 15px;
+        .logo i {
+            font-size: 1.8rem;
         }
 
-        .nav-links li {
-            margin-bottom: 10px;
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
         }
 
-        .nav-links a {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            color: var(--light-color);
-            text-decoration: none;
-            border-radius: 5px;
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
             transition: var(--transition);
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            background-color: rgba(255, 255, 255, 0.1);
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .user-actions button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-actions button:hover {
             color: var(--primary-color);
         }
 
-        .nav-links i {
-            margin-right: 10px;
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 80px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .sidebar.active {
+            width: 200px;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: white;
             font-size: 1.2rem;
-            width: 25px;
-            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .nav-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            width: 30px;
+        }
+
+        .nav-text {
+            display: none;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        .sidebar.active .nav-text {
+            display: inline-block;
         }
 
         /* Main Content */
         .main-content {
             flex: 1;
-            margin-left: 250px;
             padding: 20px;
-            transition: var(--transition);
+            overflow-y: auto;
         }
 
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .search-bar {
-            display: flex;
-            width: 50%;
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px 0 0 5px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .search-bar button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 0 5px 5px 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .search-bar button:hover {
-            background-color: #2980b9;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-actions a {
-            color: var(--text-color);
-            margin-left: 15px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-        }
-
-        .user-actions i {
-            font-size: 1.2rem;
-        }
-
-        .mobile-menu-btn {
+        .page {
             display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-color);
-            cursor: pointer;
         }
 
-        /* Carousel */
+        .page.active {
+            display: block;
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Carousel Styles */
         .carousel {
             position: relative;
-            height: 400px;
-            margin-bottom: 40px;
-            border-radius: 10px;
+            margin-bottom: 30px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: var(--box-shadow);
+        }
+
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease;
         }
 
         .carousel-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: flex-end;
-            padding: 30px;
-            color: white;
+            min-width: 100%;
+            position: relative;
         }
 
-        .carousel-slide.active {
-            opacity: 1;
+        .carousel-slide img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
         }
 
         .slide-content {
-            background: rgba(0, 0, 0, 0.7);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
             padding: 20px;
-            border-radius: 5px;
-            max-width: 60%;
         }
 
-        .slide-content h2 {
-            margin-bottom: 10px;
-            font-size: 1.8rem;
+        .slide-content h3 {
+            margin-bottom: 5px;
         }
 
         .carousel-controls {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
+            top: 50%;
+            width: 100%;
             display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
         }
 
         .carousel-control {
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
+            background: rgba(255, 255, 255, 0.7);
             border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-left: 10px;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
             transition: var(--transition);
         }
 
         .carousel-control:hover {
-            background: rgba(0, 0, 0, 0.8);
+            background: white;
         }
 
-        /* Content Sections */
-        .section-title {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary-color);
-            display: inline-block;
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
         }
 
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .indicator.active {
+            background-color: var(--primary-color);
+        }
+
+        /* Content Grid */
         .content-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-top: 20px;
         }
 
         .content-card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
+            background: white;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: var(--box-shadow);
             transition: var(--transition);
             cursor: pointer;
         }
 
         .content-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
 
         .card-image {
+            width: 100%;
             height: 250px;
-            background-size: cover;
-            background-position: center;
+            object-fit: cover;
         }
 
         .card-content {
             padding: 15px;
         }
 
-        .card-content h3 {
+        .card-title {
+            font-weight: 600;
             margin-bottom: 5px;
-            font-size: 1.1rem;
-        }
-
-        .card-content p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .card-meta {
             display: flex;
             justify-content: space-between;
             font-size: 0.8rem;
-            color: #888;
+            color: #777;
+            margin-top: 10px;
         }
 
-        /* Book Description Page */
-        .book-detail {
+        /* Description Page */
+        .book-details {
             display: flex;
             gap: 30px;
-            margin-bottom: 40px;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
         }
 
         .book-cover {
-            flex: 0 0 300px;
+            flex: 0 0 200px;
         }
 
         .book-cover img {
             width: 100%;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
         }
 
         .book-info {
             flex: 1;
         }
 
-        .book-info h1 {
+        .book-title {
+            font-size: 1.8rem;
             margin-bottom: 10px;
-            font-size: 2rem;
+            color: var(--secondary-color);
         }
 
         .book-meta {
             display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            color: #666;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: #777;
         }
 
-        .book-actions {
+        .book-description {
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .action-buttons {
             display: flex;
-            gap: 15px;
-            margin: 25px 0;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .btn {
             padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 600;
             transition: var(--transition);
@@ -362,29 +409,37 @@
         }
 
         .btn-outline:hover {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: rgba(52, 152, 219, 0.1);
         }
 
+        /* Chapters List */
         .chapters-list {
-            margin-top: 30px;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
         }
 
         .chapter-item {
             display: flex;
             justify-content: space-between;
-            padding: 15px;
+            padding: 15px 0;
             border-bottom: 1px solid #eee;
             cursor: pointer;
             transition: var(--transition);
         }
 
         .chapter-item:hover {
-            background-color: #f5f5f5;
+            background-color: #f9f9f9;
+            padding-left: 10px;
+        }
+
+        .chapter-item:last-child {
+            border-bottom: none;
         }
 
         .chapter-views {
-            color: #666;
+            color: #777;
             font-size: 0.9rem;
         }
 
@@ -399,13 +454,15 @@
         }
 
         .reading-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
             line-height: 1.8;
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto 40px;
+            margin-bottom: 30px;
         }
 
-        .reading-navigation {
+        .reading-controls {
             display: flex;
             justify-content: space-between;
             margin-top: 30px;
@@ -413,9 +470,10 @@
 
         /* Comments Section */
         .comments-section {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
         }
 
         .comment-form {
@@ -426,24 +484,15 @@
             width: 100%;
             padding: 15px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
             resize: vertical;
             min-height: 100px;
             margin-bottom: 10px;
             font-family: inherit;
         }
 
-        .comment-form button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .comment {
-            padding: 15px;
+        .comment-item {
+            padding: 15px 0;
             border-bottom: 1px solid #eee;
         }
 
@@ -458,51 +507,47 @@
         }
 
         .comment-date {
-            color: #666;
+            color: #777;
             font-size: 0.9rem;
         }
 
-        /* My Account Page */
-        .account-container {
+        /* Account Page */
+        .account-info {
             display: flex;
             gap: 30px;
-        }
-
-        .account-sidebar {
-            flex: 0 0 250px;
-        }
-
-        .account-content {
-            flex: 1;
-        }
-
-        .profile-card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
+            background: white;
+            border-radius: var(--border-radius);
             padding: 20px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
         }
 
-        .profile-avatar {
+        .user-avatar {
             width: 100px;
             height: 100px;
             border-radius: 50%;
             background-color: var(--primary-color);
-            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
             font-size: 2.5rem;
-            margin: 0 auto 15px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
 
         .reading-history {
-            background-color: var(--card-bg);
-            border-radius: 8px;
+            background: white;
+            border-radius: var(--border-radius);
             padding: 20px;
-            box-shadow: var(--shadow);
+            box-shadow: var(--box-shadow);
         }
 
         .history-item {
@@ -519,729 +564,808 @@
         .history-cover {
             width: 60px;
             height: 80px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 5px;
+            object-fit: cover;
+            border-radius: 4px;
         }
 
-        .history-info {
+        .history-content {
             flex: 1;
         }
 
-        .history-info h4 {
+        .history-title {
+            font-weight: 600;
             margin-bottom: 5px;
         }
 
-        .history-info p {
-            color: #666;
+        .history-meta {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Search Results */
+        .search-results {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .result-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-cover {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .result-meta {
+            color: #777;
             font-size: 0.9rem;
         }
 
         /* Mobile Styles */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
+            .header-container {
                 padding: 15px;
             }
 
-            .mobile-menu-btn {
-                display: block;
-            }
-
             .search-bar {
-                width: 100%;
-                margin-bottom: 15px;
+                margin: 0 10px;
             }
 
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
+            .sidebar {
+                position: fixed;
+                left: -80px;
+                height: 100%;
+                z-index: 200;
             }
 
-            .user-actions {
-                width: 100%;
-                justify-content: space-between;
+            .sidebar.active {
+                left: 0;
+                width: 80%;
+                max-width: 300px;
             }
 
-            .carousel {
-                height: 300px;
+            .sidebar.active .nav-text {
+                display: inline-block;
             }
 
-            .slide-content {
-                max-width: 90%;
+            .main-content {
+                padding: 15px;
             }
 
-            .book-detail {
+            .book-details {
                 flex-direction: column;
             }
 
             .book-cover {
                 flex: 0 0 auto;
+                text-align: center;
             }
 
-            .account-container {
+            .book-cover img {
+                max-width: 200px;
+            }
+
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .carousel-slide img {
+                height: 200px;
+            }
+
+            .account-info {
                 flex-direction: column;
-            }
-
-            .account-sidebar {
-                flex: 0 0 auto;
+                text-align: center;
             }
         }
 
-        /* Page Transitions */
-        .page {
-            display: none;
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
         }
 
-        .page.active {
-            display: block;
+        .text-center {
+            text-align: center;
         }
 
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+        .mt-20 {
+            margin-top: 20px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .mb-20 {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar Navigation -->
-        <div class="sidebar">
+    <!-- Header -->
+    <header>
+        <div class="header-container">
             <div class="logo">
-                <h1>Digital<span>Library</span></h1>
+                <i class="fas fa-book-open"></i>
+                <span>ReadHub</span>
             </div>
-            <ul class="nav-links">
-                <li><a href="#" class="nav-link active" data-page="home"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#" class="nav-link" data-page="books"><i class="fas fa-book"></i> Books</a></li>
-                <li><a href="#" class="nav-link" data-page="manga"><i class="fas fa-book-open"></i> Manga</a></li>
-                <li><a href="#" class="nav-link" data-page="articles"><i class="fas fa-newspaper"></i> Articles</a></li>
-                <li><a href="#" class="nav-link" data-page="account"><i class="fas fa-user"></i> My Account</a></li>
-                <li><a href="#" class="nav-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a></li>
-            </ul>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search for books, manga, articles...">
+                <button id="search-button"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-actions">
+                <button id="account-button"><i class="fas fa-user"></i></button>
+                <button id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-icons">
+                <a href="#" class="nav-item active" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="#" class="nav-item" data-page="novels">
+                    <i class="fas fa-book"></i>
+                    <span class="nav-text">Novels</span>
+                </a>
+                <a href="#" class="nav-item" data-page="manga">
+                    <i class="fas fa-images"></i>
+                    <span class="nav-text">Manga</span>
+                </a>
+                <a href="#" class="nav-item" data-page="articles">
+                    <i class="fas fa-newspaper"></i>
+                    <span class="nav-text">Articles</span>
+                </a>
+                <a href="#" class="nav-item" data-page="account">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="nav-text">My Account</span>
+                </a>
+            </div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header with Search -->
-            <div class="header">
-                <button class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search for books, manga, articles...">
-                    <button><i class="fas fa-search"></i></button>
-                </div>
-                <div class="user-actions">
-                    <a href="#" class="nav-link" data-page="account"><i class="fas fa-user"></i></a>
-                    <a href="#" class="nav-link" data-page="notifications"><i class="fas fa-bell"></i></a>
-                    <a href="#" class="nav-link" data-page="bookmarks"><i class="fas fa-bookmark"></i></a>
-                </div>
-            </div>
-
             <!-- Home Page -->
-            <div id="home" class="page active">
+            <div class="page active" id="home-page">
+                <h1 class="page-title"><i class="fas fa-home"></i> Featured Content</h1>
+                
                 <!-- Carousel -->
                 <div class="carousel">
-                    <div class="carousel-slide active" style="background-image: url('https://picsum.photos/1200/600?random=1')">
-                        <div class="slide-content">
-                            <h2>The Lost Kingdom</h2>
-                            <p>Discover the secrets of an ancient civilization in this thrilling adventure novel.</p>
+                    <div class="carousel-slides">
+                        <div class="carousel-slide">
+                            <img src="https://placehold.co/800x300/3498db/ffffff?text=Featured+Novel" alt="Featured Novel">
+                            <div class="slide-content">
+                                <h3>The Lost Kingdom</h3>
+                                <p>An epic fantasy adventure that will transport you to another world</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="carousel-slide" style="background-image: url('https://picsum.photos/1200/600?random=2')">
-                        <div class="slide-content">
-                            <h2>Cyber Samurai</h2>
-                            <p>A futuristic manga series blending traditional samurai values with cyberpunk aesthetics.</p>
+                        <div class="carousel-slide">
+                            <img src="https://placehold.co/800x300/e74c3c/ffffff?text=Popular+Manga" alt="Popular Manga">
+                            <div class="slide-content">
+                                <h3>Cyber Samurai</h3>
+                                <p>A futuristic tale of honor and technology in a dystopian world</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="carousel-slide" style="background-image: url('https://picsum.photos/1200/600?random=3')">
-                        <div class="slide-content">
-                            <h2>The Future of AI</h2>
-                            <p>An in-depth article exploring the ethical implications of artificial intelligence.</p>
+                        <div class="carousel-slide">
+                            <img src="https://placehold.co/800x300/2ecc71/ffffff?text=Latest+Article" alt="Latest Article">
+                            <div class="slide-content">
+                                <h3>The Future of Reading</h3>
+                                <p>How digital platforms are transforming literature consumption</p>
+                            </div>
                         </div>
                     </div>
                     <div class="carousel-controls">
                         <button class="carousel-control prev"><i class="fas fa-chevron-left"></i></button>
                         <button class="carousel-control next"><i class="fas fa-chevron-right"></i></button>
                     </div>
-                </div>
-
-                <!-- Featured Books -->
-                <h2 class="section-title">Featured Books</h2>
-                <div class="content-grid">
-                    <div class="content-card" data-id="1" data-type="book">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=4')"></div>
-                        <div class="card-content">
-                            <h3>The Silent Forest</h3>
-                            <p>A mystery thriller set in a remote village</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 2.4K</span>
-                                <span><i class="fas fa-star"></i> 4.7</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-card" data-id="2" data-type="book">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=5')"></div>
-                        <div class="card-content">
-                            <h3>Ocean's Whisper</h3>
-                            <p>A romance novel about second chances</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 1.8K</span>
-                                <span><i class="fas fa-star"></i> 4.5</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-card" data-id="3" data-type="book">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=6')"></div>
-                        <div class="card-content">
-                            <h3>Beyond the Stars</h3>
-                            <p>Space exploration and alien encounters</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 3.1K</span>
-                                <span><i class="fas fa-star"></i> 4.8</span>
-                            </div>
-                        </div>
+                    <div class="carousel-indicators">
+                        <div class="indicator active"></div>
+                        <div class="indicator"></div>
+                        <div class="indicator"></div>
                     </div>
                 </div>
 
-                <!-- Featured Manga -->
-                <h2 class="section-title">Popular Manga</h2>
-                <div class="content-grid">
-                    <div class="content-card" data-id="4" data-type="manga">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=7')"></div>
-                        <div class="card-content">
-                            <h3>Dragon's Legacy</h3>
-                            <p>Fantasy adventure with mythical creatures</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 5.2K</span>
-                                <span><i class="fas fa-star"></i> 4.9</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-card" data-id="5" data-type="manga">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=8')"></div>
-                        <div class="card-content">
-                            <h3>Shadow Blade</h3>
-                            <p>Ninja action in feudal Japan</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 4.7K</span>
-                                <span><i class="fas fa-star"></i> 4.6</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-card" data-id="6" data-type="manga">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=9')"></div>
-                        <div class="card-content">
-                            <h3>Mechanized Heart</h3>
-                            <p>Sci-fi romance with android characters</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 3.9K</span>
-                                <span><i class="fas fa-star"></i> 4.7</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Featured Articles -->
-                <h2 class="section-title">Recent Articles</h2>
-                <div class="content-grid">
-                    <div class="content-card" data-id="7" data-type="article">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=10')"></div>
-                        <div class="card-content">
-                            <h3>Climate Change Solutions</h3>
-                            <p>Innovative approaches to environmental challenges</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 1.2K</span>
-                                <span><i class="fas fa-star"></i> 4.3</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-card" data-id="8" data-type="article">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=11')"></div>
-                        <div class="card-content">
-                            <h3>The Psychology of Creativity</h3>
-                            <p>Understanding how creative minds work</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 980</span>
-                                <span><i class="fas fa-star"></i> 4.5</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-card" data-id="9" data-type="article">
-                        <div class="card-image" style="background-image: url('https://picsum.photos/300/400?random=12')"></div>
-                        <div class="card-content">
-                            <h3>Blockchain Revolution</h3>
-                            <p>How blockchain is transforming industries</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> 1.5K</span>
-                                <span><i class="fas fa-star"></i> 4.6</span>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Recent Additions -->
+                <h2 class="page-title"><i class="fas fa-clock"></i> Recently Added</h2>
+                <div class="content-grid" id="recent-content">
+                    <!-- Content will be populated by JavaScript -->
                 </div>
             </div>
 
-            <!-- Book Description Page -->
-            <div id="book-description" class="page">
-                <div class="book-detail">
-                    <div class="book-cover">
-                        <img src="https://picsum.photos/300/400?random=4" alt="Book Cover">
-                    </div>
-                    <div class="book-info">
-                        <h1>The Silent Forest</h1>
-                        <div class="book-meta">
-                            <span><i class="fas fa-user"></i> Author: Jane Smith</span>
-                            <span><i class="fas fa-tag"></i> Genre: Mystery, Thriller</span>
-                            <span><i class="fas fa-star"></i> Rating: 4.7/5</span>
-                        </div>
-                        <p>In a remote village surrounded by an ancient forest, a series of mysterious disappearances has the residents on edge. When detective Alex Reed arrives to investigate, he discovers that the forest holds secrets far darker than anyone could have imagined.</p>
-                        <div class="book-actions">
-                            <button class="btn btn-primary start-reading" data-id="1">Start Reading</button>
-                            <button class="btn btn-outline"><i class="fas fa-bookmark"></i> Bookmark</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chapters-list">
-                    <h2 class="section-title">Chapters</h2>
-                    <div class="chapter-item" data-chapter="1">
-                        <span>Chapter 1: The Arrival</span>
-                        <span class="chapter-views"><i class="fas fa-eye"></i> 1,243 views</span>
-                    </div>
-                    <div class="chapter-item" data-chapter="2">
-                        <span>Chapter 2: First Clues</span>
-                        <span class="chapter-views"><i class="fas fa-eye"></i> 987 views</span>
-                    </div>
-                    <div class="chapter-item" data-chapter="3">
-                        <span>Chapter 3: The Old Legend</span>
-                        <span class="chapter-views"><i class="fas fa-eye"></i> 845 views</span>
-                    </div>
-                    <div class="chapter-item" data-chapter="4">
-                        <span>Chapter 4: Into the Woods</span>
-                        <span class="chapter-views"><i class="fas fa-eye"></i> 732 views</span>
-                    </div>
-                </div>
-
-                <div class="comments-section">
-                    <h2 class="section-title">Comments</h2>
-                    <div class="comment-form">
-                        <textarea placeholder="Share your thoughts..."></textarea>
-                        <button class="btn btn-primary">Post Comment</button>
-                    </div>
-                    <div class="comment">
-                        <div class="comment-header">
-                            <span class="comment-author">BookLover42</span>
-                            <span class="comment-date">2 days ago</span>
-                        </div>
-                        <p>This book had me on the edge of my seat! The atmosphere is so well crafted, I felt like I was in that forest myself.</p>
-                    </div>
-                    <div class="comment">
-                        <div class="comment-header">
-                            <span class="comment-author">MysteryFan</span>
-                            <span class="comment-date">1 week ago</span>
-                        </div>
-                        <p>The plot twists in chapter 3 completely caught me off guard. Can't wait to read more from this author!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reading Page -->
-            <div id="reading-page" class="page">
-                <div class="reading-header">
-                    <h1>Chapter 1: The Arrival</h1>
-                    <div>
-                        <button class="btn btn-outline"><i class="fas fa-bookmark"></i> Bookmark</button>
-                    </div>
-                </div>
-                <div class="reading-content">
-                    <p>The rain fell in sheets, obscuring the winding road that led to Blackwood village. Detective Alex Reed gripped the steering wheel tighter, the wipers struggling to keep pace with the downpour. He'd taken this assignment hoping for a quiet break from city life, but the tension in Police Chief Miller's voice during their phone call suggested otherwise.</p>
-                    <p>"Three disappearances in as many months," Miller had said. "All near the forest. The locals are spooked, and frankly, so am I."</p>
-                    <p>As Alex rounded the final bend, the village came into view—a cluster of old stone buildings nestled against an impossibly dense wall of trees. The Silent Forest, they called it. The name seemed fitting. Even from this distance, the woods had a presence, a watchful quality that made the back of Alex's neck prickle.</p>
-                    <p>He pulled up outside the police station, a modest building with a single flickering light above the door. Chief Miller was waiting, his face etched with worry lines that seemed too deep for a man his age.</p>
-                    <p>"Detective Reed," Miller said, extending a hand. "Thank you for coming. I know this isn't the kind of case you're used to."</p>
-                    <p>Alex shook the offered hand. "Missing persons are always serious, Chief. Tell me everything."</p>
-                    <p>Miller led him inside, to a small office where case files covered every available surface. "The first was a hiker, experienced, knew these woods well. Then a teenager from the village, last seen heading toward the forest edge. Most recently, one of our own—a young officer who went to investigate reports of strange lights."</p>
-                    <p>"No bodies? No signs of struggle?" Alex asked, already scanning the files.</p>
-                    <p>"Nothing. It's like the forest swallowed them whole." Miller's voice dropped to a near whisper. "Some of the older villagers say it's the Guardian—an ancient spirit that protects the woods. They say it takes those who disrespect the forest."</p>
-                    <p>Alex suppressed a sigh. Superstition. It always complicated investigations. But as his eyes fell on a photograph of the missing officer—a young woman with bright, determined eyes—he felt a familiar resolve settle in his gut. Superstition or not, people were missing, and he would find out why.</p>
-                </div>
-                <div class="reading-navigation">
-                    <button class="btn btn-outline prev-chapter"><i class="fas fa-arrow-left"></i> Previous Chapter</button>
-                    <button class="btn btn-primary next-chapter">Next Chapter <i class="fas fa-arrow-right"></i></button>
-                </div>
-
-                <div class="comments-section">
-                    <h2 class="section-title">Chapter Comments</h2>
-                    <div class="comment-form">
-                        <textarea placeholder="Share your thoughts on this chapter..."></textarea>
-                        <button class="btn btn-primary">Post Comment</button>
-                    </div>
-                    <div class="comment">
-                        <div class="comment-header">
-                            <span class="comment-author">ForestExplorer</span>
-                            <span class="comment-date">5 hours ago</span>
-                        </div>
-                        <p>The atmosphere in this chapter is incredible! I can almost feel the rain and see that dense forest.</p>
-                    </div>
-                    <div class="comment">
-                        <div class="comment-header">
-                            <span class="comment-author">MysteryAddict</span>
-                            <span class="comment-date">1 day ago</span>
-                        </div>
-                        <p>I'm already hooked! The setup is perfect - small town, mysterious forest, missing people. Can't wait to read more.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Books Page -->
-            <div id="books" class="page">
-                <h1 class="section-title">All Books</h1>
-                <div class="content-grid">
-                    <!-- Books will be dynamically loaded here -->
+            <!-- Novels Page -->
+            <div class="page" id="novels-page">
+                <h1 class="page-title"><i class="fas fa-book"></i> Novels</h1>
+                <div class="content-grid" id="novels-content">
+                    <!-- Content will be populated by JavaScript -->
                 </div>
             </div>
 
             <!-- Manga Page -->
-            <div id="manga" class="page">
-                <h1 class="section-title">All Manga</h1>
-                <div class="content-grid">
-                    <!-- Manga will be dynamically loaded here -->
+            <div class="page" id="manga-page">
+                <h1 class="page-title"><i class="fas fa-images"></i> Manga</h1>
+                <div class="content-grid" id="manga-content">
+                    <!-- Content will be populated by JavaScript -->
                 </div>
             </div>
 
             <!-- Articles Page -->
-            <div id="articles" class="page">
-                <h1 class="section-title">All Articles</h1>
-                <div class="content-grid">
-                    <!-- Articles will be dynamically loaded here -->
+            <div class="page" id="articles-page">
+                <h1 class="page-title"><i class="fas fa-newspaper"></i> Articles</h1>
+                <div class="content-grid" id="articles-content">
+                    <!-- Content will be populated by JavaScript -->
                 </div>
             </div>
 
-            <!-- My Account Page -->
-            <div id="account" class="page">
-                <h1 class="section-title">My Account</h1>
-                <div class="account-container">
-                    <div class="account-sidebar">
-                        <div class="profile-card">
-                            <div class="profile-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <h2>John Reader</h2>
-                            <p>Member since 2022</p>
-                        </div>
-                        <div class="reading-stats">
-                            <div class="stat-item">
-                                <h3>Books Read</h3>
-                                <p>24</p>
-                            </div>
-                            <div class="stat-item">
-                                <h3>Reading Time</h3>
-                                <p>68 hours</p>
-                            </div>
-                            <div class="stat-item">
-                                <h3>Favorite Genre</h3>
-                                <p>Mystery</p>
-                            </div>
-                        </div>
+            <!-- Book Description Page -->
+            <div class="page" id="description-page">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+
+            <!-- Reading Page -->
+            <div class="page" id="reading-page">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+
+            <!-- Account Page -->
+            <div class="page" id="account-page">
+                <h1 class="page-title"><i class="fas fa-user-circle"></i> My Account</h1>
+                
+                <div class="account-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
                     </div>
-                    <div class="account-content">
-                        <div class="reading-history">
-                            <h2>Reading History</h2>
-                            <div class="history-item">
-                                <div class="history-cover" style="background-image: url('https://picsum.photos/300/400?random=4')"></div>
-                                <div class="history-info">
-                                    <h4>The Silent Forest</h4>
-                                    <p>Last read: Chapter 3 - 2 days ago</p>
-                                    <p>Progress: 65%</p>
-                                </div>
-                            </div>
-                            <div class="history-item">
-                                <div class="history-cover" style="background-image: url('https://picsum.photos/300/400?random=7')"></div>
-                                <div class="history-info">
-                                    <h4>Dragon's Legacy</h4>
-                                    <p>Last read: Chapter 12 - 1 week ago</p>
-                                    <p>Progress: 42%</p>
-                                </div>
-                            </div>
-                            <div class="history-item">
-                                <div class="history-cover" style="background-image: url('https://picsum.photos/300/400?random=5')"></div>
-                                <div class="history-info">
-                                    <h4>Ocean's Whisper</h4>
-                                    <p>Last read: Chapter 7 - 2 weeks ago</p>
-                                    <p>Progress: 100% (Completed)</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="user-details">
+                        <h2 class="user-name">John Reader</h2>
+                        <p>Member since: January 2023</p>
+                        <p>Total reading time: 142 hours</p>
+                        <p>Favorite genre: Fantasy</p>
                     </div>
+                </div>
+
+                <div class="reading-history">
+                    <h2 class="page-title"><i class="fas fa-history"></i> Reading History</h2>
+                    <div id="history-content">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Results Page -->
+            <div class="page" id="search-results-page">
+                <h1 class="page-title"><i class="fas fa-search"></i> Search Results</h1>
+                <div class="search-results" id="search-results-content">
+                    <!-- Content will be populated by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Sample data for the platform
+        const contentData = {
+            novels: [
+                {
+                    id: 1,
+                    title: "The Lost Kingdom",
+                    author: "Elena Rivers",
+                    cover: "https://placehold.co/300x400/3498db/ffffff?text=The+Lost+Kingdom",
+                    description: "An epic fantasy adventure following a young hero's journey to reclaim a fallen kingdom from dark forces. Filled with magic, mystery, and unforgettable characters.",
+                    category: "Fantasy",
+                    chapters: [
+                        { id: 1, title: "The Prophecy", content: "Lorem ipsum dolor sit amet...", views: 1520 },
+                        { id: 2, title: "The Journey Begins", content: "Consectetur adipiscing elit...", views: 1345 },
+                        { id: 3, title: "The First Challenge", content: "Sed do eiusmod tempor...", views: 1210 }
+                    ],
+                    comments: [
+                        { user: "BookLover42", date: "2023-05-15", text: "I couldn't put this down! The world-building is incredible." },
+                        { user: "FantasyFan", date: "2023-05-10", text: "The characters feel so real. Can't wait for the next chapter!" }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Echoes of Silence",
+                    author: "Michael Thorn",
+                    cover: "https://placehold.co/300x400/2c3e50/ffffff?text=Echoes+of+Silence",
+                    description: "A psychological thriller that explores the depths of human consciousness and the haunting power of memory.",
+                    category: "Thriller",
+                    chapters: [
+                        { id: 1, title: "The Awakening", content: "Lorem ipsum dolor sit amet...", views: 980 },
+                        { id: 2, title: "Fragments", content: "Consectetur adipiscing elit...", views: 845 }
+                    ],
+                    comments: [
+                        { user: "ThrillerSeeker", date: "2023-05-12", text: "This book kept me up all night! So suspenseful." }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Starlight Sonata",
+                    author: "Clara Bennett",
+                    cover: "https://placehold.co/300x400/9b59b6/ffffff?text=Starlight+Sonata",
+                    description: "A romantic tale of two musicians whose lives intertwine through the power of music and fate.",
+                    category: "Romance",
+                    chapters: [
+                        { id: 1, title: "First Note", content: "Lorem ipsum dolor sit amet...", views: 1120 },
+                        { id: 2, title: "Harmony", content: "Consectetur adipiscing elit...", views: 995 },
+                        { id: 3, title: "Crescendo", content: "Sed do eiusmod tempor...", views: 870 }
+                    ],
+                    comments: []
+                }
+            ],
+            manga: [
+                {
+                    id: 4,
+                    title: "Cyber Samurai",
+                    author: "Kenji Tanaka",
+                    cover: "https://placehold.co/300x400/e74c3c/ffffff?text=Cyber+Samurai",
+                    description: "In a futuristic Tokyo, a lone samurai navigates the neon-lit streets while battling corporate corruption and rogue AI.",
+                    category: "Sci-Fi",
+                    chapters: [
+                        { id: 1, title: "Neon Dawn", content: "Lorem ipsum dolor sit amet...", views: 2105 },
+                        { id: 2, title: "Data Ghosts", content: "Consectetur adipiscing elit...", views: 1980 },
+                        { id: 3, title: "System Override", content: "Sed do eiusmod tempor...", views: 1850 }
+                    ],
+                    comments: [
+                        { user: "MangaMaster", date: "2023-05-14", text: "The art style is absolutely stunning! Story is gripping too." }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Spirit Chronicles",
+                    author: "Yuki Matsumoto",
+                    cover: "https://placehold.co/300x400/2ecc71/ffffff?text=Spirit+Chronicles",
+                    description: "A young girl discovers she can see and communicate with spirits, embarking on adventures to help them find peace.",
+                    category: "Supernatural",
+                    chapters: [
+                        { id: 1, title: "The First Spirit", content: "Lorem ipsum dolor sit amet...", views: 1670 },
+                        { id: 2, title: "Whispers in the Wind", content: "Consectetur adipiscing elit...", views: 1540 }
+                    ],
+                    comments: []
+                }
+            ],
+            articles: [
+                {
+                    id: 6,
+                    title: "The Future of Reading",
+                    author: "Dr. Sarah Chen",
+                    cover: "https://placehold.co/300x400/f39c12/ffffff?text=Future+of+Reading",
+                    description: "An in-depth analysis of how digital platforms are transforming literature consumption and the publishing industry.",
+                    category: "Technology",
+                    chapters: [
+                        { id: 1, title: "Digital Revolution", content: "Lorem ipsum dolor sit amet...", views: 890 }
+                    ],
+                    comments: [
+                        { user: "TechReader", date: "2023-05-11", text: "Very insightful article. The statistics about ebook adoption were particularly interesting." }
+                    ]
+                },
+                {
+                    id: 7,
+                    title: "Classic Literature in Modern Times",
+                    author: "Prof. James Wilson",
+                    cover: "https://placehold.co/300x400/34495e/ffffff?text=Classic+Literature",
+                    description: "Exploring the relevance and adaptation of classic literary works in contemporary society and education.",
+                    category: "Education",
+                    chapters: [
+                        { id: 1, title: "Full Article", content: "Lorem ipsum dolor sit amet...", views: 720 }
+                    ],
+                    comments: []
+                }
+            ]
+        };
+
+        // App State
+        let currentPage = 'home';
+        let currentContent = null;
+        let currentChapter = null;
+        let searchResults = [];
+
         // DOM Elements
         const pages = document.querySelectorAll('.page');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const contentCards = document.querySelectorAll('.content-card');
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const sidebar = document.querySelector('.sidebar');
-        const carouselSlides = document.querySelectorAll('.carousel-slide');
-        const prevBtn = document.querySelector('.carousel-control.prev');
-        const nextBtn = document.querySelector('.carousel-control.next');
-        const startReadingBtn = document.querySelector('.start-reading');
-        const chapterItems = document.querySelectorAll('.chapter-item');
-        const prevChapterBtn = document.querySelector('.prev-chapter');
-        const nextChapterBtn = document.querySelector('.next-chapter');
+        const navItems = document.querySelectorAll('.nav-item');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const accountButton = document.getElementById('account-button');
 
-        // Sample data for dynamic content
-        const books = [
-            { id: 1, title: "The Silent Forest", description: "A mystery thriller set in a remote village", views: "2.4K", rating: "4.7", image: "https://picsum.photos/300/400?random=4" },
-            { id: 2, title: "Ocean's Whisper", description: "A romance novel about second chances", views: "1.8K", rating: "4.5", image: "https://picsum.photos/300/400?random=5" },
-            { id: 3, title: "Beyond the Stars", description: "Space exploration and alien encounters", views: "3.1K", rating: "4.8", image: "https://picsum.photos/300/400?random=6" },
-            { id: 10, title: "The Last Ember", description: "Historical fiction during the Roman Empire", views: "1.5K", rating: "4.6", image: "https://picsum.photos/300/400?random=13" },
-            { id: 11, title: "Whispers in the Dark", description: "Psychological thriller with unexpected twists", views: "2.2K", rating: "4.4", image: "https://picsum.photos/300/400?random=14" },
-            { id: 12, title: "Echoes of Tomorrow", description: "Dystopian future where memories are currency", views: "2.8K", rating: "4.9", image: "https://picsum.photos/300/400?random=15" }
-        ];
+        // Initialize the app
+        function initApp() {
+            // Populate content grids
+            populateContentGrid('recent-content', getAllContent());
+            populateContentGrid('novels-content', contentData.novels);
+            populateContentGrid('manga-content', contentData.manga);
+            populateContentGrid('articles-content', contentData.articles);
+            
+            // Set up carousel
+            initCarousel();
+            
+            // Set up event listeners
+            setupEventListeners();
+        }
 
-        const manga = [
-            { id: 4, title: "Dragon's Legacy", description: "Fantasy adventure with mythical creatures", views: "5.2K", rating: "4.9", image: "https://picsum.photos/300/400?random=7" },
-            { id: 5, title: "Shadow Blade", description: "Ninja action in feudal Japan", views: "4.7K", rating: "4.6", image: "https://picsum.photos/300/400?random=8" },
-            { id: 6, title: "Mechanized Heart", description: "Sci-fi romance with android characters", views: "3.9K", rating: "4.7", image: "https://picsum.photos/300/400?random=9" },
-            { id: 13, title: "Starlight Symphony", description: "Music-themed fantasy in a magical academy", views: "3.5K", rating: "4.8", image: "https://picsum.photos/300/400?random=16" },
-            { id: 14, title: "Crimson Samurai", description: "Vampire samurai in alternate history Japan", views: "4.1K", rating: "4.7", image: "https://picsum.photos/300/400?random=17" },
-            { id: 15, title: "Digital Ghost", description: "Hacker battles AI in cyberspace", views: "3.8K", rating: "4.5", image: "https://picsum.photos/300/400?random=18" }
-        ];
+        // Get all content for the home page
+        function getAllContent() {
+            return [...contentData.novels, ...contentData.manga, ...contentData.articles];
+        }
 
-        const articles = [
-            { id: 7, title: "Climate Change Solutions", description: "Innovative approaches to environmental challenges", views: "1.2K", rating: "4.3", image: "https://picsum.photos/300/400?random=10" },
-            { id: 8, title: "The Psychology of Creativity", description: "Understanding how creative minds work", views: "980", rating: "4.5", image: "https://picsum.photos/300/400?random=11" },
-            { id: 9, title: "Blockchain Revolution", description: "How blockchain is transforming industries", views: "1.5K", rating: "4.6", image: "https://picsum.photos/300/400?random=12" },
-            { id: 16, title: "Quantum Computing Explained", description: "Demystifying the next computing revolution", views: "1.1K", rating: "4.4", image: "https://picsum.photos/300/400?random=19" },
-            { id: 17, title: "The Future of Renewable Energy", description: "Breakthroughs in solar and wind technology", views: "890", rating: "4.2", image: "https://picsum.photos/300/400?random=20" },
-            { id: 18, title: "Mindfulness in the Digital Age", description: "Balancing technology and mental wellbeing", views: "1.3K", rating: "4.7", image: "https://picsum.photos/300/400?random=21" }
-        ];
+        // Populate a content grid with items
+        function populateContentGrid(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'content-card';
+                card.dataset.id = item.id;
+                
+                card.innerHTML = `
+                    <img src="${item.cover}" alt="${item.title}" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">${item.title}</h3>
+                        <p>by ${item.author}</p>
+                        <div class="card-meta">
+                            <span>${getCategoryIcon(item)} ${item.category}</span>
+                            <span>${item.chapters.length} ${item.chapters.length === 1 ? 'chapter' : 'chapters'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => showDescription(item));
+                container.appendChild(card);
+            });
+        }
 
-        // Navigation Functions
+        // Get appropriate icon for content category
+        function getCategoryIcon(item) {
+            if (contentData.novels.includes(item)) return '<i class="fas fa-book"></i>';
+            if (contentData.manga.includes(item)) return '<i class="fas fa-images"></i>';
+            if (contentData.articles.includes(item)) return '<i class="fas fa-newspaper"></i>';
+            return '';
+        }
+
+        // Initialize carousel functionality
+        function initCarousel() {
+            const slides = document.querySelector('.carousel-slides');
+            const indicators = document.querySelectorAll('.indicator');
+            const prevButton = document.querySelector('.carousel-control.prev');
+            const nextButton = document.querySelector('.carousel-control.next');
+            let currentSlide = 0;
+            const totalSlides = document.querySelectorAll('.carousel-slide').length;
+            
+            function goToSlide(index) {
+                if (index < 0) index = totalSlides - 1;
+                if (index >= totalSlides) index = 0;
+                
+                slides.style.transform = `translateX(-${index * 100}%)`;
+                
+                // Update indicators
+                indicators.forEach((indicator, i) => {
+                    indicator.classList.toggle('active', i === index);
+                });
+                
+                currentSlide = index;
+            }
+            
+            prevButton.addEventListener('click', () => goToSlide(currentSlide - 1));
+            nextButton.addEventListener('click', () => goToSlide(currentSlide + 1));
+            
+            // Auto-advance slides every 5 seconds
+            setInterval(() => goToSlide(currentSlide + 1), 5000);
+            
+            // Click on indicators to go to specific slide
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => goToSlide(index));
+            });
+        }
+
+        // Show content description page
+        function showDescription(content) {
+            currentContent = content;
+            
+            const descriptionPage = document.getElementById('description-page');
+            descriptionPage.innerHTML = `
+                <div class="book-details">
+                    <div class="book-cover">
+                        <img src="${content.cover}" alt="${content.title}">
+                    </div>
+                    <div class="book-info">
+                        <h1 class="book-title">${content.title}</h1>
+                        <div class="book-meta">
+                            <span>by ${content.author}</span>
+                            <span>${getCategoryIcon(content)} ${content.category}</span>
+                        </div>
+                        <p class="book-description">${content.description}</p>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" id="start-reading-btn">Start Reading</button>
+                            <button class="btn btn-outline" id="add-to-favorites-btn">Add to Favorites</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chapters-list">
+                    <h2 class="page-title"><i class="fas fa-list"></i> Chapters</h2>
+                    ${content.chapters.map((chapter, index) => `
+                        <div class="chapter-item" data-chapter-id="${chapter.id}">
+                            <div>
+                                <h3>Chapter ${index + 1}: ${chapter.title}</h3>
+                                <p>Published: ${getRandomDate()}</p>
+                            </div>
+                            <div class="chapter-views">
+                                <i class="fas fa-eye"></i> ${chapter.views} views
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="comments-section">
+                    <h2 class="page-title"><i class="fas fa-comments"></i> Comments</h2>
+                    <div class="comment-form">
+                        <textarea placeholder="Share your thoughts..."></textarea>
+                        <button class="btn btn-primary">Post Comment</button>
+                    </div>
+                    <div id="comments-list">
+                        ${content.comments.map(comment => `
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.user}</span>
+                                    <span class="comment-date">${comment.date}</span>
+                                </div>
+                                <p>${comment.text}</p>
+                            </div>
+                        `).join('')}
+                        ${content.comments.length === 0 ? '<p class="text-center">No comments yet. Be the first to share your thoughts!</p>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners for chapters
+            document.querySelectorAll('.chapter-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const chapterId = parseInt(item.dataset.chapterId);
+                    const chapter = content.chapters.find(c => c.id === chapterId);
+                    showReadingPage(content, chapter);
+                });
+            });
+            
+            // Add event listener for start reading button
+            document.getElementById('start-reading-btn').addEventListener('click', () => {
+                showReadingPage(content, content.chapters[0]);
+            });
+            
+            showPage('description');
+        }
+
+        // Show reading page
+        function showReadingPage(content, chapter) {
+            currentContent = content;
+            currentChapter = chapter;
+            
+            const readingPage = document.getElementById('reading-page');
+            readingPage.innerHTML = `
+                <div class="reading-header">
+                    <h1>${content.title}</h1>
+                    <div>
+                        <span class="chapter-views"><i class="fas fa-eye"></i> ${chapter.views} views</span>
+                    </div>
+                </div>
+                <div class="reading-content">
+                    <h2>Chapter ${content.chapters.findIndex(c => c.id === chapter.id) + 1}: ${chapter.title}</h2>
+                    <p>${chapter.content.repeat(20)}</p>
+                </div>
+                <div class="reading-controls">
+                    <button class="btn btn-outline" id="prev-chapter-btn" ${content.chapters[0].id === chapter.id ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-left"></i> Previous Chapter
+                    </button>
+                    <button class="btn btn-outline" id="back-to-description-btn">
+                        <i class="fas fa-book"></i> Back to Description
+                    </button>
+                    <button class="btn btn-outline" id="next-chapter-btn" ${content.chapters[content.chapters.length - 1].id === chapter.id ? 'disabled' : ''}>
+                        Next Chapter <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="comments-section mt-20">
+                    <h2 class="page-title"><i class="fas fa-comments"></i> Comments</h2>
+                    <div class="comment-form">
+                        <textarea placeholder="Share your thoughts on this chapter..."></textarea>
+                        <button class="btn btn-primary">Post Comment</button>
+                    </div>
+                    <div id="comments-list">
+                        ${content.comments.map(comment => `
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.user}</span>
+                                    <span class="comment-date">${comment.date}</span>
+                                </div>
+                                <p>${comment.text}</p>
+                            </div>
+                        `).join('')}
+                        ${content.comments.length === 0 ? '<p class="text-center">No comments yet. Be the first to share your thoughts!</p>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners for navigation
+            document.getElementById('back-to-description-btn').addEventListener('click', () => {
+                showDescription(content);
+            });
+            
+            document.getElementById('prev-chapter-btn').addEventListener('click', () => {
+                const currentIndex = content.chapters.findIndex(c => c.id === chapter.id);
+                if (currentIndex > 0) {
+                    showReadingPage(content, content.chapters[currentIndex - 1]);
+                }
+            });
+            
+            document.getElementById('next-chapter-btn').addEventListener('click', () => {
+                const currentIndex = content.chapters.findIndex(c => c.id === chapter.id);
+                if (currentIndex < content.chapters.length - 1) {
+                    showReadingPage(content, content.chapters[currentIndex + 1]);
+                }
+            });
+            
+            showPage('reading');
+        }
+
+        // Show account page with reading history
+        function showAccountPage() {
+            const historyContent = document.getElementById('history-content');
+            const allContent = getAllContent();
+            
+            historyContent.innerHTML = allContent.map(item => `
+                <div class="history-item">
+                    <img src="${item.cover}" alt="${item.title}" class="history-cover">
+                    <div class="history-content">
+                        <h3 class="history-title">${item.title}</h3>
+                        <p class="history-meta">by ${item.author} • Last read: ${getRandomDate()}</p>
+                        <p class="history-meta">Progress: ${Math.floor(Math.random() * 100)}%</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            showPage('account');
+        }
+
+        // Perform search
+        function performSearch(query) {
+            if (!query.trim()) return;
+            
+            const allContent = getAllContent();
+            searchResults = allContent.filter(item => 
+                item.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.author.toLowerCase().includes(query.toLowerCase()) ||
+                item.category.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            const searchResultsContent = document.getElementById('search-results-content');
+            searchResultsContent.innerHTML = '';
+            
+            if (searchResults.length === 0) {
+                searchResultsContent.innerHTML = '<p class="text-center">No results found for "' + query + '"</p>';
+            } else {
+                searchResults.forEach(item => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.dataset.id = item.id;
+                    
+                    resultItem.innerHTML = `
+                        <img src="${item.cover}" alt="${item.title}" class="result-cover">
+                        <div class="result-content">
+                            <h3 class="result-title">${item.title}</h3>
+                            <p class="result-meta">by ${item.author} • ${getCategoryIcon(item)} ${item.category}</p>
+                            <p class="result-meta">${item.chapters.length} ${item.chapters.length === 1 ? 'chapter' : 'chapters'}</p>
+                        </div>
+                    `;
+                    
+                    resultItem.addEventListener('click', () => showDescription(item));
+                    searchResultsContent.appendChild(resultItem);
+                });
+            }
+            
+            showPage('search-results');
+        }
+
+        // Show a specific page
         function showPage(pageId) {
             pages.forEach(page => {
                 page.classList.remove('active');
             });
-            document.getElementById(pageId).classList.add('active');
             
-            // Update active nav link
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('data-page') === pageId) {
-                    link.classList.add('active');
+            document.getElementById(`${pageId}-page`).classList.add('active');
+            currentPage = pageId;
+            
+            // Update active nav item
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageId) {
+                    item.classList.add('active');
                 }
             });
             
-            // Close mobile sidebar when a page is selected
+            // Close sidebar on mobile after navigation
             if (window.innerWidth <= 768) {
                 sidebar.classList.remove('active');
             }
         }
 
-        // Initialize page content
-        function initializePageContent() {
-            // Load books
-            const booksGrid = document.querySelector('#books .content-grid');
-            booksGrid.innerHTML = '';
-            books.forEach(book => {
-                booksGrid.innerHTML += `
-                    <div class="content-card" data-id="${book.id}" data-type="book">
-                        <div class="card-image" style="background-image: url('${book.image}')"></div>
-                        <div class="card-content">
-                            <h3>${book.title}</h3>
-                            <p>${book.description}</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> ${book.views}</span>
-                                <span><i class="fas fa-star"></i> ${book.rating}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Load manga
-            const mangaGrid = document.querySelector('#manga .content-grid');
-            mangaGrid.innerHTML = '';
-            manga.forEach(mangaItem => {
-                mangaGrid.innerHTML += `
-                    <div class="content-card" data-id="${mangaItem.id}" data-type="manga">
-                        <div class="card-image" style="background-image: url('${mangaItem.image}')"></div>
-                        <div class="card-content">
-                            <h3>${mangaItem.title}</h3>
-                            <p>${mangaItem.description}</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> ${mangaItem.views}</span>
-                                <span><i class="fas fa-star"></i> ${mangaItem.rating}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Load articles
-            const articlesGrid = document.querySelector('#articles .content-grid');
-            articlesGrid.innerHTML = '';
-            articles.forEach(article => {
-                articlesGrid.innerHTML += `
-                    <div class="content-card" data-id="${article.id}" data-type="article">
-                        <div class="card-image" style="background-image: url('${article.image}')"></div>
-                        <div class="card-content">
-                            <h3>${article.title}</h3>
-                            <p>${article.description}</p>
-                            <div class="card-meta">
-                                <span><i class="fas fa-eye"></i> ${article.views}</span>
-                                <span><i class="fas fa-star"></i> ${article.rating}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Re-attach event listeners to new content cards
-            document.querySelectorAll('.content-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const type = this.getAttribute('data-type');
-                    showBookDescription(id, type);
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = item.dataset.page;
+                    
+                    if (page === 'account') {
+                        showAccountPage();
+                    } else {
+                        showPage(page);
+                    }
                 });
             });
-        }
-
-        // Show book description page
-        function showBookDescription(id, type) {
-            let item;
-            if (type === 'book') {
-                item = books.find(b => b.id == id);
-            } else if (type === 'manga') {
-                item = manga.find(m => m.id == id);
-            } else if (type === 'article') {
-                item = articles.find(a => a.id == id);
-            }
-
-            if (item) {
-                // Update book description page with item data
-                document.querySelector('.book-detail .book-cover img').src = item.image;
-                document.querySelector('.book-info h1').textContent = item.title;
-                document.querySelector('.book-info p').textContent = item.description;
-                
-                showPage('book-description');
-            }
-        }
-
-        // Carousel functionality
-        let currentSlide = 0;
-        function showSlide(index) {
-            carouselSlides.forEach(slide => {
-                slide.classList.remove('active');
+            
+            // Sidebar toggle
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
             });
-            carouselSlides[index].classList.add('active');
+            
+            // Mobile menu button
+            mobileMenuButton.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Account button
+            accountButton.addEventListener('click', () => {
+                showAccountPage();
+            });
+            
+            // Search functionality
+            searchButton.addEventListener('click', () => {
+                performSearch(searchInput.value);
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch(searchInput.value);
+                }
+            });
         }
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % carouselSlides.length;
-            showSlide(currentSlide);
+        // Helper function to generate random dates
+        function getRandomDate() {
+            const start = new Date(2023, 0, 1);
+            const end = new Date();
+            const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            return randomDate.toISOString().split('T')[0];
         }
 
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + carouselSlides.length) % carouselSlides.length;
-            showSlide(currentSlide);
-        }
-
-        // Event Listeners
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const pageId = this.getAttribute('data-page');
-                showPage(pageId);
-            });
-        });
-
-        mobileMenuBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('active');
-        });
-
-        prevBtn.addEventListener('click', prevSlide);
-        nextBtn.addEventListener('click', nextSlide);
-
-        // Auto-advance carousel
-        setInterval(nextSlide, 5000);
-
-        contentCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const type = this.getAttribute('data-type');
-                showBookDescription(id, type);
-            });
-        });
-
-        startReadingBtn.addEventListener('click', function() {
-            showPage('reading-page');
-        });
-
-        chapterItems.forEach(item => {
-            item.addEventListener('click', function() {
-                showPage('reading-page');
-            });
-        });
-
-        prevChapterBtn.addEventListener('click', function() {
-            alert('Previous chapter would load here');
-        });
-
-        nextChapterBtn.addEventListener('click', function() {
-            alert('Next chapter would load here');
-        });
-
-        // Search functionality
-        const searchInput = document.querySelector('.search-bar input');
-        const searchButton = document.querySelector('.search-bar button');
-
-        searchButton.addEventListener('click', function() {
-            const query = searchInput.value.trim();
-            if (query) {
-                alert(`Searching for: ${query}`);
-                // In a real implementation, you would filter content based on the query
-            }
-        });
-
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchButton.click();
-            }
-        });
-
-        // Initialize the page
-        initializePageContent();
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
