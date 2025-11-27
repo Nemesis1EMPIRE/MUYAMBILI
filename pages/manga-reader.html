@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture - MUYAMBILI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+    <!-- Background Image Fixe -->
+    <div class="background-image"></div>
+
+    <!-- Top App Bar -->
+    <header class="topappbar">
+        <div class="topappbar-left">
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="MUYAMBILI Logo" class="logo-image">
+                <span class="logo-text">MUYAMBILI</span>
+            </div>
+        </div>
+        
+        <div class="topappbar-center">
+            <div class="reader-info" id="readerInfo">
+                <!-- Info du chapitre chargée dynamiquement -->
+            </div>
+        </div>
+        
+        <div class="topappbar-right">
+            <button class="reader-control" onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Latérale (Desktop) -->
+    <nav class="sidebar">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span class="nav-text">Accueil</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="manga.html" class="nav-link">
+                    <i class="fas fa-comic"></i>
+                    <span class="nav-text">Mangas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <main class="main-content">
+        <section class="manga-reader">
+            <div class="reader-container">
+                <!-- Navigation entre chapitres -->
+                <div class="chapter-nav">
+                    <button class="nav-btn prev" onclick="previousChapter()" id="prevChapterBtn">
+                        <i class="fas fa-chevron-left"></i>
+                        Chapitre précédent
+                    </button>
+                    
+                    <select class="chapter-select" id="chapterSelect" onchange="changeChapter(this.value)">
+                        <!-- Options chargées dynamiquement -->
+                    </select>
+                    
+                    <button class="nav-btn next" onclick="nextChapter()" id="nextChapterBtn">
+                        Chapitre suivant
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Pages du manga -->
+                <div class="pages-container" id="pagesContainer">
+                    <!-- Pages chargées dynamiquement -->
+                    <div class="loading-pages">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Chargement des pages...</p>
+                    </div>
+                </div>
+
+                <!-- Navigation en bas -->
+                <div class="reader-controls">
+                    <button class="control-btn" onclick="previousPage()" id="prevPageBtn">
+                        <i class="fas fa-chevron-left"></i>
+                        Page précédente
+                    </button>
+                    
+                    <div class="page-indicator">
+                        <span id="currentPage">1</span> / <span id="totalPages">0</span>
+                    </div>
+                    
+                    <button class="control-btn" onclick="nextPage()" id="nextPageBtn">
+                        Page suivante
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Configuration Supabase
+        const SUPABASE_URL = 'https://ton-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'ton-anon-key-tres-long';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Variables globales
+        let currentManga = null;
+        let currentChapter = null;
+        let allChapters = [];
+        let currentPageIndex = 0;
+        let pages = [];
+
+        // Charger au démarrage
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mangaId = urlParams.get('manga');
+            const chapterId = urlParams.get('chapter');
+            
+            if (mangaId && chapterId) {
+                loadReader(mangaId, chapterId);
+            } else {
+                alert('Paramètres manquants');
+                window.location.href = 'manga.html';
+            }
+        });
+
+        // Charger le lecteur
+        async function loadReader(mangaId, chapterId) {
+            try {
+                // Charger le manga
+                const { data: manga, error: mangaError } = await supabase
+                    .from('mangas')
+                    .select('*')
+                    .eq('id', mangaId)
+                    .single();
+
+                if (mangaError) throw mangaError;
+                currentManga = manga;
+
+                // Charger tous les chapitres
+                const { data: chapters, error: chaptersError } = await supabase
+                    .from('manga_chapters')
+                    .select('*')
+                    .eq('manga_id', mangaId)
+                    .order('chapter_number', { ascending: true });
+
+                if (chaptersError) throw chaptersError;
+                allChapters = chapters;
+
+                // Charger le chapitre actuel
+                await loadChapter(chapterId);
+
+                // Mettre à jour l'interface
+                updateChapterSelector();
+                updateReaderInfo();
+
+            } catch (error) {
+                console.error('Erreur chargement lecteur:', error);
+                alert('Erreur lors du chargement');
+                window.location.href = 'manga.html';
+            }
+        }
+
+        // Charger un chapitre
+        async function loadChapter(chapterId) {
+            try {
+                const { data: chapter, error } = await supabase
+                    .from('manga_chapters')
+                    .select('*')
+                    .eq('id', chapterId)
+                    .single();
+
+                if (error) throw error;
+                currentChapter = chapter;
+
+                // Charger les pages (simulation - à adapter selon ton stockage)
+                pages = await loadChapterPages(chapterId);
+                currentPageIndex = 0;
+
+                // Afficher les pages
+                displayPages();
+                updateNavigation();
+
+                // Incrémenter le compteur de vues
+                await incrementChapterViews(chapterId);
+
+            } catch (error) {
+                console.error('Erreur chargement chapitre:', error);
+                alert('Erreur lors du chargement du chapitre');
+            }
+        }
+
+        // Simuler le chargement des pages
+        async function loadChapterPages(chapterId) {
+            // À remplacer par ton vrai système de stockage des pages
+            return [
+                { url: 'https://via.placeholder.com/800x1200/667eea/white?text=Page+1', number: 1 },
+                { url: 'https://via.placeholder.com/800x1200/764ba2/white?text=Page+2', number: 2 },
+                { url: 'https://via.placeholder.com/800x1200/4facfe/white?text=Page+3', number: 3 },
+                { url: 'https://via.placeholder.com/800x1200/00f2fe/white?text=Page+4', number: 4 },
+                { url: 'https://via.placeholder.com/800x1200/a8edea/white?text=Page+5', number: 5 }
+            ];
+        }
+
+        // Afficher les pages
+        function displayPages() {
+            const container = document.getElementById('pagesContainer');
+            
+            if (pages.length === 0) {
+                container.innerHTML = `
+                    <div class="no-pages">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Aucune page disponible</h3>
+                        <p>Ce chapitre ne contient pas encore de pages.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = pages.map((page, index) => `
+                <div class="manga-page ${index === currentPageIndex ? 'active' : ''}" id="page-${index}">
+                    <img src="${page.url}" alt="Page ${page.number}" onload="imageLoaded(this)" onerror="imageError(this)">
+                    <div class="page-number">${page.number}</div>
+                </div>
+            `).join('');
+
+            // Faire défiler vers la page actuelle
+            const currentPageElement = document.getElementById(`page-${currentPageIndex}`);
+            if (currentPageElement) {
+                currentPageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Navigation entre pages
+        function nextPage() {
+            if (currentPageIndex < pages.length - 1) {
+                currentPageIndex++;
+                displayPages();
+                updateNavigation();
+            }
+        }
+
+        function previousPage() {
+            if (currentPageIndex > 0) {
+                currentPageIndex--;
+                displayPages();
+                updateNavigation();
+            }
+        }
+
+        // Navigation entre chapitres
+        function nextChapter() {
+            const currentIndex = allChapters.findIndex(ch => ch.id === currentChapter.id);
+            if (currentIndex < allChapters.length - 1) {
+                const nextChapter = allChapters[currentIndex + 1];
+                window.location.href = `manga-reader.html?manga=${currentManga.id}&chapter=${nextChapter.id}`;
+            }
+        }
+
+        function previousChapter() {
+            const currentIndex = allChapters.findIndex(ch => ch.id === currentChapter.id);
+            if (currentIndex > 0) {
+                const prevChapter = allChapters[currentIndex - 1];
+                window.location.href = `manga-reader.html?manga=${currentManga.id}&chapter=${prevChapter.id}`;
+            }
+        }
+
+        function changeChapter(chapterId) {
+            window.location.href = `manga-reader.html?manga=${currentManga.id}&chapter=${chapterId}`;
+        }
+
+        // Mettre à jour la navigation
+        function updateNavigation() {
+            document.getElementById('currentPage').textContent = currentPageIndex + 1;
+            document.getElementById('totalPages').textContent = pages.length;
+            
+            // Boutons précédent/suivant
+            document.getElementById('prevPageBtn').disabled = currentPageIndex === 0;
+            document.getElementById('nextPageBtn').disabled = currentPageIndex === pages.length - 1;
+            
+            // Boutons chapitres
+            const currentIndex = allChapters.findIndex(ch => ch.id === currentChapter.id);
+            document.getElementById('prevChapterBtn').disabled = currentIndex === 0;
+            document.getElementById('nextChapterBtn').disabled = currentIndex === allChapters.length - 1;
+        }
+
+        // Mettre à jour le sélecteur de chapitres
+        function updateChapterSelector() {
+            const select = document.getElementById('chapterSelect');
+            select.innerHTML = allChapters.map(chapter => `
+                <option value="${chapter.id}" ${chapter.id === currentChapter.id ? 'selected' : ''}>
+                    Chapitre ${chapter.chapter_number}${chapter.title ? ` - ${chapter.title}` : ''}
+                </option>
+            `).join('');
+        }
+
+        // Mettre à jour les infos du lecteur
+        function updateReaderInfo() {
+            const readerInfo = document.getElementById('readerInfo');
+            readerInfo.innerHTML = `
+                <div class="reader-title">
+                    <strong>${currentManga.title}</strong>
+                    <span> - Chapitre ${currentChapter.chapter_number}${currentChapter.title ? `: ${currentChapter.title}` : ''}</span>
+                </div>
+            `;
+        }
+
+        // Incrémenter les vues
+        async function incrementChapterViews(chapterId) {
+            try {
+                const { data: chapter } = await supabase
+                    .from('manga_chapters')
+                    .select('views')
+                    .eq('id', chapterId)
+                    .single();
+
+                const newViews = (chapter.views || 0) + 1;
+
+                await supabase
+                    .from('manga_chapters')
+                    .update({ views: newViews })
+                    .eq('id', chapterId);
+
+            } catch (error) {
+                console.error('Erreur mise à jour vues:', error);
+            }
+        }
+
+        // Plein écran
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Gestion des images
+        function imageLoaded(img) {
+            img.style.opacity = '1';
+        }
+
+        function imageError(img) {
+            img.style.display = 'none';
+            const parent = img.parentElement;
+            parent.innerHTML = `
+                <div class="image-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Image non chargée</p>
+                </div>
+            `;
+        }
+
+        // Navigation au clavier
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    nextPage();
+                    break;
+                case 'ArrowLeft':
+                    previousPage();
+                    break;
+                case 'ArrowUp':
+                    previousChapter();
+                    break;
+                case 'ArrowDown':
+                    nextChapter();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
