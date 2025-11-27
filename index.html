@@ -1,317 +1,358 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
+<title>Lecture en Ligne</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ReaderHub — Everything in One File</title>
-
-<!-- ICONS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-/* ------------------- GLOBAL ------------------- */
+/* ---- STYLE GLOBAL ---- */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #f4f4f4;
+    background: #f5f5f5;
 }
 
-.page { display: none; padding: 20px; margin-bottom: 80px; }
-.page.active { display: block; }
-
-/* ------------------ SIDEBAR DESKTOP ------------------ */
-.sidebar {
-    position: fixed;
-    left: 0; top: 0;
-    width: 220px;
-    height: 100vh;
+header {
     background: #111;
-    color: white;
     padding: 20px;
-    display: none;
-}
-.sidebar h2 { margin: 0 0 20px 0; }
-.sidebar ul { list-style: none; padding: 0; }
-.sidebar li {
-    padding: 12px;
-    cursor: pointer;
-    font-size: 15px;
-}
-.sidebar li:hover { background: #333; }
-
-/* ------------------ MOBILE BAR ------------------ */
-.mobilebar {
-    display: flex;
-    justify-content: space-around;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    padding: 12px 0;
-    background: #111;
-}
-.mobilebar i {
     color: white;
-    font-size: 24px;
 }
 
-/* ------------------ CONTENT ------------------ */
-#page-content { padding: 20px; }
-.card {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 12px;
+/* ---- NOM DU SITE ---- */
+#site-name {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
 }
 
-/* Search */
-.search-box {
-    display: flex;
-    gap: 10px;
+/* ---- CAROUSEL ---- */
+.carousel {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
     margin: 15px 0;
 }
-.search-box input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #aaa;
-}
 
-/* Carousel */
 .carousel img {
     width: 100%;
-    height: 200px;
-    border-radius: 10px;
+    height: 180px;
     object-fit: cover;
 }
 
-/* Desktop mode */
-@media screen and (min-width: 800px) {
-    .sidebar { display: block; }
-    .mobilebar { display: none; }
-    #page-content { margin-left: 250px; }
+/* ---- BARRE DE RECHERCHE ---- */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px;
 }
-</style>
 
+.search-container input {
+    width: 70%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+/* ---- SIDEBAR DESKTOP ---- */
+.sidebar {
+    width: 70px;
+    background: #222;
+    color: white;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding-top: 120px;
+    text-align: center;
+}
+
+.sidebar div {
+    margin-bottom: 40px;
+    cursor: pointer;
+}
+
+/* ---- VERSION MOBILE ---- */
+@media(max-width: 700px) {
+    .sidebar {
+        top: auto;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        padding-top: 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+}
+
+/* ---- LISTE DES LIVRES ---- */
+#content {
+    margin-left: 90px;
+    padding: 15px;
+}
+
+.book-card {
+    background: white;
+    padding: 12px;
+    width: 160px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.book-card img {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* ---- PAGE DESCRIPTION ---- */
+#description-page {
+    display: none;
+    padding: 15px;
+}
+
+.chapter-btn {
+    background: black;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* ---- PAGE LECTURE (PDF) ---- */
+#reader-page {
+    display: none;
+    padding: 15px;
+}
+
+iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    margin-top: 15px;
+}
+
+/* ---- COMMENTAIRES ---- */
+#comments {
+    margin-top: 20px;
+}
+
+#comments textarea {
+    width: 100%;
+    height: 90px;
+}
+
+</style>
 </head>
 <body>
 
-<!-- =================== SIDEBAR (DESKTOP) =================== -->
-<nav class="sidebar">
-    <h2>ReaderHub</h2>
-    <ul>
-        <li onclick="go('home')"><i class="fa fa-home"></i> Accueil</li>
-        <li onclick="go('books')"><i class="fa fa-book"></i> Livres</li>
-        <li onclick="go('manga')"><i class="fa fa-dragon"></i> Mangas</li>
-        <li onclick="go('articles')"><i class="fa fa-newspaper"></i> Articles</li>
-        <li onclick="go('account')"><i class="fa fa-user"></i> Mon Compte</li>
-    </ul>
-</nav>
+<header>
+    <div id="site-name">Lectura</div>
 
-<!-- =================== MOBILE BAR =================== -->
-<nav class="mobilebar">
-    <i class="fa fa-home" onclick="go('home')"></i>
-    <i class="fa fa-book" onclick="go('books')"></i>
-    <i class="fa fa-dragon" onclick="go('manga')"></i>
-    <i class="fa fa-newspaper" onclick="go('articles')"></i>
-    <i class="fa fa-user" onclick="go('account')"></i>
-</nav>
-
-<!-- =================== MAIN CONTENT =================== -->
-<div id="page-content">
-
-<!-- HOME -->
-<section id="home" class="page active">
-    <h1>Bienvenue sur ReaderHub</h1>
-
-    <div class="search-box">
-        <input id="searchInput" type="text" placeholder="Rechercher titre, auteur, genre...">
-        <button onclick="search()">Rechercher</button>
-    </div>
-
-    <h2>Carrousel</h2>
     <div class="carousel">
-        <img id="carousel-img" src="https://picsum.photos/800/300?random=1">
+        <img id="carousel-img" src="">
     </div>
 
-    <h2>Résultats</h2>
-    <div id="searchResults"></div>
-</section>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Rechercher par titre, auteur, genre...">
+    </div>
+</header>
 
-<!-- BOOKS -->
-<section id="books" class="page">
-    <h1>Livres</h1>
-    <div id="books-list"></div>
-</section>
-
-<!-- MANGA -->
-<section id="manga" class="page">
-    <h1>Mangas</h1>
-    <div id="manga-list"></div>
-</section>
-
-<!-- ARTICLES -->
-<section id="articles" class="page">
-    <h1>Articles</h1>
-    <div id="articles-list"></div>
-</section>
-
-<!-- DESCRIPTION -->
-<section id="description" class="page">
-    <div id="descriptionContent"></div>
-</section>
-
-<!-- READING -->
-<section id="chapter" class="page">
-    <h1 id="chapterTitle"></h1>
-    <p id="chapterContent"></p>
-
-    <p><strong>Vues :</strong> <span id="chapterViews"></span></p>
-
-    <h3>Commentaires :</h3>
-    <div id="commentList"></div>
-
-    <textarea id="commentInput" placeholder="Votre commentaire..." style="width:100%;height:80px;"></textarea>
-    <button onclick="addComment()">Publier</button>
-</section>
-
-<!-- ACCOUNT -->
-<section id="account" class="page">
-    <h1>Historique de lecture</h1>
-    <div id="historyList"></div>
-</section>
-
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div onclick="showCategory('books')">📚</div>
+    <div onclick="showCategory('manga')">🧧</div>
+    <div onclick="showCategory('articles')">📰</div>
+    <div onclick="showAccount()">👤</div>
 </div>
 
-<!-- =================== SCRIPT =================== -->
+<div id="content"></div>
+
+<div id="description-page"></div>
+<div id="reader-page"></div>
+
 <script>
-// Database (allowed to invent)
+/* ======== BASE DE DONNÉES ======== */
 const items = [
-    {id:1, type:"book", title:"La Forêt Rouge", author:"A. Mavoungou", genre:"Fantasy", description:"Une aventure magique..."},
-    {id:2, type:"manga", title:"Shadow Blade", author:"Kenji Moro", genre:"Action", description:"Un ninja traqué..."},
-    {id:3, type:"article", title:"L'Histoire du Web", author:"J. Bernard", genre:"Tech", description:"De 1990 à nos jours..."}
+{
+    id: 1,
+    type: "book",
+    title: "La Nuit Rouge",
+    author: "A. Mavungu",
+    genre: "Fantaisie",
+    cover: "covers/book1.jpg",
+    description: "Un roman de fantasy captivant.",
+    chapters: [
+        { title: "Chapitre 1", pdf: "chapters/book1_ch1.pdf", views: 0 }
+    ]
+},
+{
+    id: 2,
+    type: "manga",
+    title: "Samurai Spirit",
+    author: "Kenjiro",
+    genre: "Action",
+    cover: "covers/manga1.jpg",
+    description: "Un jeune samouraï au destin incroyable.",
+    chapters: [
+        { title: "Chapitre 1", pdf: "chapters/manga1_ch1.pdf", views: 0 }
+    ]
+}
 ];
 
-/* ------------------ NAVIGATION ------------------ */
-function go(page) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(page).classList.add("active");
-}
-
-/* ------------------ CAROUSEL ------------------ */
-let carIndex = 1;
+/* ======== CAROUSEL ======== */
+let index = 0;
 setInterval(() => {
-    carIndex++;
-    document.getElementById("carousel-img").src = `https://picsum.photos/800/300?random=${carIndex}`;
-}, 3000);
+    document.getElementById("carousel-img").src = items[index].cover;
+    index = (index + 1) % items.length;
+}, 2000);
 
-/* ------------------ LIST DISPLAY ------------------ */
-function fillLists() {
-    fill("books-list", "book");
-    fill("manga-list", "manga");
-    fill("articles-list", "article");
-}
-function fill(container, type) {
-    const c = document.getElementById(container);
-    c.innerHTML = "";
-    items.filter(i => i.type === type).forEach(i => {
-        c.innerHTML += `
-            <div class="card" onclick="openDescription(${i.id})">
-                <h3>${i.title}</h3>
-                <p>${i.author}</p>
-                <small>${i.genre}</small>
-            </div>`;
+/* ======== AFFICHAGE DES LIVRES ======== */
+function showCategory(type) {
+    document.getElementById("description-page").style.display = "none";
+    document.getElementById("reader-page").style.display = "none";
+
+    let html = "<h2>" + type.toUpperCase() + "</h2>";
+
+    items.filter(x => x.type === type).forEach(book => {
+        html += `
+        <div class="book-card" onclick="showDescription(${book.id})">
+            <img src="${book.cover}">
+            <h4>${book.title}</h4>
+            <small>${book.author}</small>
+        </div>
+        `;
     });
+
+    document.getElementById("content").innerHTML = html;
 }
-fillLists();
+showCategory("books");
 
-/* ------------------ SEARCH ------------------ */
-function search() {
-    const q = document.getElementById("searchInput").value.toLowerCase();
-    const results = items.filter(i =>
-        i.title.toLowerCase().includes(q) ||
-        i.author.toLowerCase().includes(q) ||
-        i.genre.toLowerCase().includes(q)
-    );
+/* ======== PAGE DESCRIPTION ======== */
+function showDescription(id) {
+    let book = items.find(x => x.id === id);
+    document.getElementById("content").innerHTML = "";
+    document.getElementById("description-page").style.display = "block";
 
-    const box = document.getElementById("searchResults");
-    box.innerHTML = "";
+    let chaptersHTML = "";
 
-    results.forEach(r => {
-        box.innerHTML += `
-            <div class="card" onclick="openDescription(${r.id})">
-                <h3>${r.title}</h3>
-                <p>${r.author}</p>
-                <small>${r.genre}</small>
-            </div>`;
+    book.chapters.forEach((ch, i) => {
+        chaptersHTML += `
+            <button class="chapter-btn" onclick="readChapter(${id}, ${i})">
+                ${ch.title} (vues : ${ch.views})
+            </button><br>
+        `;
     });
-}
 
-/* ------------------ DESCRIPTION ------------------ */
-function openDescription(id) {
-    const item = items.find(i => i.id === id);
-    go("description");
+    document.getElementById("description-page").innerHTML = `
+        <h2>${book.title}</h2>
+        <img src="${book.cover}" style="width:200px;">
+        <p>Auteur : ${book.author}</p>
+        <p>Genre : ${book.genre}</p>
+        <p>${book.description}</p>
 
-    document.getElementById("descriptionContent").innerHTML = `
-        <h1>${item.title}</h1>
-        <p>${item.description}</p>
-        <button onclick="openChapter(${id})">Lire Chapitre 1</button>
+        <h3>Chapitres</h3>
+        ${chaptersHTML}
     `;
 }
 
-/* ------------------ CHAPTER READING ------------------ */
-let current = null;
+/* ======== PAGE DE LECTURE (PDF) ======== */
+function readChapter(id, index) {
+    let book = items.find(x => x.id === id);
 
-function openChapter(id) {
-    current = id;
-    go("chapter");
+    // compteur de vues
+    book.chapters[index].views++;
 
-    const item = items.find(i => i.id === id);
+    // sauvegarde historique
+    saveHistory(book.title + " - " + book.chapters[index].title);
 
-    // VUES
-    let views = JSON.parse(localStorage.getItem("views_" + id)) || 0;
-    views++;
-    localStorage.setItem("views_" + id, JSON.stringify(views));
+    document.getElementById("description-page").style.display = "none";
+    document.getElementById("reader-page").style.display = "block";
 
-    document.getElementById("chapterTitle").innerText = item.title;
-    document.getElementById("chapterContent").innerText = "Contenu du chapitre...";
-    document.getElementById("chapterViews").innerText = views;
+    document.getElementById("reader-page").innerHTML = `
+        <h2>${book.title} - ${book.chapters[index].title}</h2>
 
-    // Historique
-    let h = JSON.parse(localStorage.getItem("history")) || [];
-    h.unshift(item.title);
-    localStorage.setItem("history", JSON.stringify(h));
+        <iframe src="${book.chapters[index].pdf}"></iframe>
 
-    loadComments();
+        <h3>Commentaires</h3>
+        <div id="comments">
+            <textarea id="commentText"></textarea>
+            <button onclick="addComment(${id},${index})">Publier</button>
+            <div id="commentList"></div>
+        </div>
+    `;
+
+    loadComments(id, index);
 }
 
-/* ------------------ COMMENTS ------------------ */
-function loadComments() {
-    const key = "comments_" + current;
-    const list = JSON.parse(localStorage.getItem(key)) || [];
-    document.getElementById("commentList").innerHTML =
-        list.map(c => `<p>• ${c}</p>`).join("");
+/* ======== COMMENTAIRES ======== */
+function addComment(id, index) {
+    let key = "comments_" + id + "_" + index;
+    let list = JSON.parse(localStorage.getItem(key) || "[]");
+
+    list.push(document.getElementById("commentText").value);
+
+    localStorage.setItem(key, JSON.stringify(list));
+    loadComments(id, index);
 }
 
-function addComment() {
-    const text = document.getElementById("commentInput").value;
-    if (!text.trim()) return;
+function loadComments(id, index) {
+    let key = "comments_" + id + "_" + index;
+    let list = JSON.parse(localStorage.getItem(key) || "[]");
 
-    const key = "comments_" + current;
-    let comments = JSON.parse(localStorage.getItem(key)) || [];
-    comments.push(text);
-    localStorage.setItem(key, JSON.stringify(comments));
+    let html = "";
+    list.forEach(c => html += "<p>• " + c + "</p>");
 
-    loadComments();
-    document.getElementById("commentInput").value = "";
+    document.getElementById("commentList").innerHTML = html;
 }
 
-/* ------------------ HISTORY ------------------ */
-setInterval(() => {
-    let h = JSON.parse(localStorage.getItem("history")) || [];
-    document.getElementById("historyList").innerHTML =
-        h.map(i => `<p>• ${i}</p>`).join("");
-}, 1000);
+/* ======== HISTORIQUE ======== */
+function saveHistory(entry) {
+    let list = JSON.parse(localStorage.getItem("history") || "[]");
+    list.push(entry);
+    localStorage.setItem("history", JSON.stringify(list));
+}
 
+function showAccount() {
+    let list = JSON.parse(localStorage.getItem("history") || "[]");
+
+    let html = "<h2>Mon Compte</h2><h3>Historique de Lecture</h3>";
+    list.forEach(h => html += "<p>📖 " + h + "</p>");
+
+    document.getElementById("content").innerHTML = html;
+}
+
+/* ======== RECHERCHE ======== */
+document.getElementById("search").addEventListener("input", function() {
+    let q = this.value.toLowerCase();
+
+    let results = items.filter(b =>
+        b.title.toLowerCase().includes(q) ||
+        b.author.toLowerCase().includes(q) ||
+        b.genre.toLowerCase().includes(q)
+    );
+
+    let html = "<h2>Résultats</h2>";
+
+    results.forEach(book => {
+        html += `
+        <div class="book-card" onclick="showDescription(${book.id})">
+            <img src="${book.cover}">
+            <h4>${book.title}</h4>
+            <small>${book.author}</small>
+        </div>
+        `;
+    });
+
+    document.getElementById("content").innerHTML = html;
+});
 </script>
+
 </body>
 </html>
