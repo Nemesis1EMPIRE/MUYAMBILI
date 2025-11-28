@@ -806,6 +806,55 @@
             margin-top: 30px;
         }
 
+        /* Favorites & History Pages */
+        .library-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .library-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .library-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .library-tab:hover {
+            color: var(--dark);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+
         /* Contact Page */
         .contact-container {
             display: grid;
@@ -1191,6 +1240,10 @@
             .account-stats {
                 grid-template-columns: 1fr;
             }
+
+            .library-tabs {
+                flex-direction: column;
+            }
         }
 
         /* Desktop-specific */
@@ -1224,6 +1277,7 @@
                 <li><a href="#" class="nav-link" data-page="booksPage"><i class="fas fa-book"></i> <span>Romans</span></a></li>
                 <li><a href="#" class="nav-link" data-page="mangaPage"><i class="fas fa-images"></i> <span>Manga</span></a></li>
                 <li><a href="#" class="nav-link" data-page="articlesPage"><i class="fas fa-newspaper"></i> <span>Articles</span></a></li>
+                <li><a href="#" class="nav-link" data-page="libraryPage"><i class="fas fa-heart"></i> <span>Ma Bibliothèque</span></a></li>
                 <li><a href="#" class="nav-link" data-page="contactPage"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
                 <li><a href="#" class="nav-link" id="accountButton"><i class="fas fa-user"></i> <span>Mon Compte</span></a></li>
             </ul>
@@ -1351,6 +1405,34 @@
                 </div>
                 <div class="content-grid" id="articlesPageList">
                     <!-- Rempli dynamiquement par JavaScript -->
+                </div>
+            </section>
+
+            <!-- Library Page -->
+            <section id="libraryPage" class="page">
+                <div class="section-title">
+                    <h2>Ma Bibliothèque</h2>
+                </div>
+
+                <div class="library-tabs">
+                    <button class="library-tab active" data-tab="favorites">
+                        <i class="fas fa-heart"></i> Mes Favoris
+                    </button>
+                    <button class="library-tab" data-tab="history">
+                        <i class="fas fa-history"></i> Historique de Lecture
+                    </button>
+                </div>
+
+                <div id="favoritesTab" class="tab-content active">
+                    <div class="content-grid" id="favoritesList">
+                        <!-- Rempli dynamiquement par JavaScript -->
+                    </div>
+                </div>
+
+                <div id="historyTab" class="tab-content">
+                    <div id="historyContent">
+                        <!-- Rempli dynamiquement par JavaScript -->
+                    </div>
                 </div>
             </section>
 
@@ -1611,7 +1693,9 @@
                     userHistory.unshift({
                         title: title,
                         date: new Date().toLocaleString('fr-FR'),
-                        timestamp: Date.now()
+                        timestamp: Date.now(),
+                        itemId: itemId,
+                        chapterIndex: chapterIndex
                     });
                     
                     if (userHistory.length > 20) {
@@ -1645,6 +1729,12 @@
             
             saveUserData();
             updateStats();
+            
+            // Mettre à jour l'affichage si on est sur la page des favoris
+            if (document.getElementById('libraryPage').style.display === 'block') {
+                renderFavorites();
+            }
+            
             return index === -1; // Retourne true si ajouté, false si retiré
         }
 
@@ -1731,6 +1821,122 @@
             labels.forEach(label => {
                 label.textContent = currentTheme === 'dark' ? 'Mode clair' : 'Mode sombre';
             });
+        }
+
+        // =============================
+        // GESTION DE LA BIBLIOTHÈQUE
+        // =============================
+        function renderFavorites() {
+            const container = document.getElementById('favoritesList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+
+            if (userFavorites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-heart"></i>
+                        <h3>Aucun favori</h3>
+                        <p>Vous n'avez encore aucun contenu dans vos favoris.</p>
+                        <button class="btn btn-primary" onclick="showPage('homePage')">
+                            <i class="fas fa-book-open"></i> Découvrir des contenus
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const favoriteItems = userFavorites.map(itemId => getItemById(itemId)).filter(Boolean);
+            
+            favoriteItems.forEach(item => {
+                const totalViews = getViews(item.id);
+                const isFav = isFavorite(item.id);
+                const rating = getRating(item.id);
+                
+                container.innerHTML += `
+                    <div class="item-card" onclick="openDescription('${item.id}')">
+                        <img src="${item.cover}" alt="${item.title}">
+                        <button class="favorite-btn active" onclick="event.stopPropagation(); toggleFavorite('${item.id}'); this.classList.toggle('active')">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <div class="card-content">
+                            <h3>${item.title}</h3>
+                            <p>${item.author}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <p class="genre">${item.genre}</p>
+                                <span class="views-badge">${totalViews} vues</span>
+                            </div>
+                            <div class="rating" onclick="event.stopPropagation()">
+                                ${[1,2,3,4,5].map(star => `
+                                    <i class="fas fa-star ${star <= rating ? 'active' : ''}" 
+                                       onclick="rateItem('${item.id}', ${star})"></i>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderLibraryHistory() {
+            const container = document.getElementById('historyContent');
+            if (!container) return;
+            
+            container.innerHTML = '';
+
+            if (userHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h3>Aucun historique</h3>
+                        <p>Vous n'avez encore rien lu récemment.</p>
+                        <button class="btn btn-primary" onclick="showPage('homePage')">
+                            <i class="fas fa-book-open"></i> Commencer à lire
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            userHistory.forEach(entry => {
+                const item = getItemById(entry.itemId);
+                if (item) {
+                    container.innerHTML += `
+                        <div class="history-item" onclick="openDescription('${entry.itemId}')">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4>${entry.title}</h4>
+                                    <p style="color: var(--gray); margin-top: 5px;">
+                                        <i class="fas fa-clock"></i> Lu le ${entry.date}
+                                    </p>
+                                </div>
+                                <i class="fas fa-chevron-right" style="color: var(--gray);"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function switchLibraryTab(tabName) {
+            // Mettre à jour les tabs
+            document.querySelectorAll('.library-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.library-tab[data-tab="${tabName}"]`).classList.add('active');
+
+            // Mettre à jour le contenu
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+
+            // Recharger le contenu
+            if (tabName === 'favorites') {
+                renderFavorites();
+            } else if (tabName === 'history') {
+                renderLibraryHistory();
+            }
         }
 
         // =============================
@@ -1922,6 +2128,8 @@
                 renderList("mangaPageList", data.mangas);
             } else if (pageId === "articlesPage") {
                 renderList("articlesPageList", data.articles);
+            } else if (pageId === "libraryPage") {
+                switchLibraryTab('favorites');
             } else if (pageId === "accountPage") {
                 renderHistory();
                 updateStats();
@@ -2312,7 +2520,15 @@
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
             document.getElementById('favoritesBtn').addEventListener('click', () => {
-                showToast('Fonctionnalité en développement', 'warning');
+                showPage('libraryPage');
+                switchLibraryTab('favorites');
+            });
+            
+            // Événements des tabs de la bibliothèque
+            document.querySelectorAll('.library-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    switchLibraryTab(tab.dataset.tab);
+                });
             });
             
             // Afficher la page d'accueil
