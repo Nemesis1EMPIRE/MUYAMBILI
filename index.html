@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovelHub - Read Novels, Manga & Articles</title>
+    <title>MUYAMBILI - Read Novels, Manga & Articles</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
@@ -29,19 +29,131 @@
             --transition: all 0.3s ease;
         }
 
+        [data-theme="dark"] {
+            --primary: #8b7355;
+            --secondary: #6d5d4c;
+            --accent: #a78a6f;
+            --light: #2d2d2d;
+            --dark: #e8e8e8;
+            --gray: #a8a8a8;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
         body {
-            background: linear-gradient(rgba(248, 244, 240, 0.9), rgba(248, 244, 240, 0.9)), url('assets/images/background.jpg');
+            background: linear-gradient(rgba(248, 244, 240, 0.9), rgba(248, 244, 240, 0.9)), url('assets/images/background.png');
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
             color: var(--dark);
             line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(rgba(45, 45, 45, 0.9), rgba(45, 45, 45, 0.9)), url('assets/images/background.png');
+        }
+
+        /* Splash Screen */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .splash-content {
+            text-align: center;
+            color: var(--dark);
+        }
+
+        .splash-logo {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .splash-loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(93, 64, 55, 0.3);
+            border-top: 3px solid var(--dark);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
         }
 
         /* Layout */
         .app-container {
             display: flex;
             min-height: 100vh;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
         /* Sidebar */
@@ -102,6 +214,25 @@
             text-align: center;
         }
 
+        .theme-toggle {
+            margin: 20px 15px 0;
+            padding: 10px 15px;
+            background: rgba(212, 184, 150, 0.3);
+            border: none;
+            border-radius: 8px;
+            color: var(--dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            width: calc(100% - 30px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(212, 184, 150, 0.5);
+        }
+
         /* Main Content */
         .main-content {
             flex: 1;
@@ -157,19 +288,21 @@
         .user-actions {
             display: flex;
             align-items: center;
+            gap: 15px;
         }
 
-        .user-actions a {
-            margin-left: 20px;
+        .user-actions button {
+            background: none;
+            border: none;
             color: var(--dark);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition);
         }
 
-        .user-actions i {
-            font-size: 1.3rem;
+        .user-actions button:hover {
+            background: var(--secondary);
         }
 
         .user-actions .avatar {
@@ -182,7 +315,6 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            margin-left: 15px;
             cursor: pointer;
         }
 
@@ -352,6 +484,19 @@
             transition: var(--transition);
             cursor: pointer;
             border: 1px solid var(--secondary);
+            position: relative;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .item-card:hover {
@@ -368,6 +513,32 @@
 
         .item-card:hover img {
             transform: scale(1.05);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray);
+        }
+
+        .favorite-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            color: #e74c3c;
         }
 
         .card-content {
@@ -401,9 +572,30 @@
             font-weight: 600;
         }
 
+        .rating {
+            display: flex;
+            gap: 2px;
+            margin-top: 8px;
+        }
+
+        .rating i {
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .rating i.active {
+            color: #f39c12;
+        }
+
+        .rating i:hover {
+            transform: scale(1.2);
+        }
+
         /* Pages */
         .page {
             display: none;
+            animation: fadeIn 0.3s ease;
         }
 
         .page.active {
@@ -921,6 +1113,10 @@
                 font-size: 0.7rem;
             }
 
+            .theme-toggle {
+                display: none;
+            }
+
             .main-content {
                 padding-bottom: 80px;
             }
@@ -933,7 +1129,7 @@
             }
 
             .user-actions {
-                display: none; /* Cache les notifications et signets en mobile */
+                display: none;
             }
 
             .search-bar {
@@ -1006,11 +1202,22 @@
     </style>
 </head>
 <body>
+    <!-- Splash Screen -->
+    <div id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-logo">MUYAMBILI</div>
+            <div class="splash-loader"></div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="app-container">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
             <div class="logo">
-                <h1>Novel<span>Hub</span></h1>
+                <h1>MUY<span>AMBILI</span></h1>
             </div>
             <ul class="nav-links">
                 <li><a href="#" class="nav-link active" data-page="homePage"><i class="fas fa-home"></i> <span>Accueil</span></a></li>
@@ -1020,6 +1227,10 @@
                 <li><a href="#" class="nav-link" data-page="contactPage"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
                 <li><a href="#" class="nav-link" id="accountButton"><i class="fas fa-user"></i> <span>Mon Compte</span></a></li>
             </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+                <span>Mode sombre</span>
+            </button>
         </nav>
 
         <!-- Main Content Area -->
@@ -1032,8 +1243,12 @@
                         <input type="text" id="searchInput" placeholder="Rechercher par titre, auteur ou genre...">
                     </div>
                     <div class="user-actions">
-                        <a href="#"><i class="fas fa-bell"></i></a>
-                        <a href="#"><i class="fas fa-bookmark"></i></a>
+                        <button id="favoritesBtn" title="Mes favoris">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button id="themeToggleMobile" title="Changer le thème">
+                            <i class="fas fa-palette"></i>
+                        </button>
                         <div class="avatar">V</div>
                     </div>
                 </div>
@@ -1225,7 +1440,7 @@
                             <i class="fas fa-envelope"></i>
                             <div class="info-content">
                                 <h4>Email</h4>
-                                <p>contact@novelhub.com</p>
+                                <p>contact@muyambili.com</p>
                             </div>
                         </div>
                         <div class="info-item">
@@ -1241,7 +1456,7 @@
 
                     <div class="contact-form">
                         <h3>Envoyez-nous un message</h3>
-                        <form action="mailto:contact@novelhub.com" method="post" enctype="text/plain">
+                        <form action="mailto:contact@muyambili.com" method="post" enctype="text/plain">
                             <div class="form-group">
                                 <label for="name">Nom complet</label>
                                 <input type="text" id="name" name="name" required>
@@ -1273,9 +1488,9 @@
                 </div>
 
                 <div class="about-section">
-                    <h3>À propos de NovelHub</h3>
-                    <p>NovelHub est votre plateforme de lecture en ligne préférée, offrant une vaste collection de romans, mangas et articles scientifiques. Notre mission est de rendre la lecture accessible à tous, partout et à tout moment.</p>
-                    <p>Fondé en 2024, NovelHub s'engage à fournir une expérience de lecture exceptionnelle avec une interface intuitive, des fonctionnalités innovantes et un contenu de qualité soigneusement sélectionné.</p>
+                    <h3>À propos de MUYAMBILI</h3>
+                    <p>MUYAMBILI est votre plateforme de lecture en ligne préférée, offrant une vaste collection de romans, mangas et articles scientifiques. Notre mission est de rendre la lecture accessible à tous, partout et à tout moment.</p>
+                    <p>Fondé en 2024, MUYAMBILI s'engage à fournir une expérience de lecture exceptionnelle avec une interface intuitive, des fonctionnalités innovantes et un contenu de qualité soigneusement sélectionné.</p>
                     <p>Rejoignez notre communauté de lecteurs passionnés et découvrez un monde de connaissances et de divertissement à portée de clic.</p>
                 </div>
             </section>
@@ -1343,36 +1558,42 @@
         // =============================
         let globalViews = {};
         let userHistory = [];
+        let userFavorites = [];
+        let userRatings = {};
 
-        // Charger les vues globales depuis le localStorage
-        function loadGlobalViews() {
-            const saved = localStorage.getItem('novelhub_global_views');
-            globalViews = saved ? JSON.parse(saved) : {};
+        // Charger les données depuis le localStorage
+        function loadUserData() {
+            const savedViews = localStorage.getItem('muyambili_global_views');
+            const savedHistory = localStorage.getItem('muyambili_user_history');
+            const savedFavorites = localStorage.getItem('muyambili_favorites');
+            const savedRatings = localStorage.getItem('muyambili_ratings');
+            const savedTheme = localStorage.getItem('muyambili_theme');
+
+            globalViews = savedViews ? JSON.parse(savedViews) : {};
+            userHistory = savedHistory ? JSON.parse(savedHistory) : [];
+            userFavorites = savedFavorites ? JSON.parse(savedFavorites) : [];
+            userRatings = savedRatings ? JSON.parse(savedRatings) : {};
+
+            // Appliquer le thème sauvegardé
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeToggleIcon();
+            }
         }
 
-        // Sauvegarder les vues globales
-        function saveGlobalViews() {
-            localStorage.setItem('novelhub_global_views', JSON.stringify(globalViews));
-        }
-
-        // Charger l'historique utilisateur
-        function loadUserHistory() {
-            const saved = localStorage.getItem('novelhub_user_history');
-            userHistory = saved ? JSON.parse(saved) : [];
-        }
-
-        // Sauvegarder l'historique utilisateur
-        function saveUserHistory() {
-            localStorage.setItem('novelhub_user_history', JSON.stringify(userHistory));
+        // Sauvegarder les données
+        function saveUserData() {
+            localStorage.setItem('muyambili_global_views', JSON.stringify(globalViews));
+            localStorage.setItem('muyambili_user_history', JSON.stringify(userHistory));
+            localStorage.setItem('muyambili_favorites', JSON.stringify(userFavorites));
+            localStorage.setItem('muyambili_ratings', JSON.stringify(userRatings));
         }
 
         // Incrémenter les vues pour un contenu
         function incrementViews(itemId, chapterIndex = null) {
             const key = chapterIndex !== null ? `${itemId}_chapter_${chapterIndex}` : itemId;
             
-            // Incrémenter les vues globales
             globalViews[key] = (globalViews[key] || 0) + 1;
-            saveGlobalViews();
             
             // Ajouter à l'historique utilisateur
             const item = getItemById(itemId);
@@ -1381,10 +1602,9 @@
                     `${item.title} - ${item.chapters[chapterIndex].title}` : 
                     item.title;
                 
-                // Éviter les doublons récents
                 const recentDuplicate = userHistory.find(entry => 
                     entry.title === title && 
-                    (Date.now() - entry.timestamp) < 300000 // 5 minutes
+                    (Date.now() - entry.timestamp) < 300000
                 );
 
                 if (!recentDuplicate) {
@@ -1394,21 +1614,53 @@
                         timestamp: Date.now()
                     });
                     
-                    // Garder seulement les 20 dernières entrées
                     if (userHistory.length > 20) {
                         userHistory = userHistory.slice(0, 20);
                     }
                     
-                    saveUserHistory();
                     updateStats();
                 }
             }
+            
+            saveUserData();
         }
 
-        // Obtenir le nombre de vues pour un contenu
+        // Obtenir le nombre de vues
         function getViews(itemId, chapterIndex = null) {
             const key = chapterIndex !== null ? `${itemId}_chapter_${chapterIndex}` : itemId;
             return globalViews[key] || 0;
+        }
+
+        // Gestion des favoris
+        function toggleFavorite(itemId) {
+            const index = userFavorites.indexOf(itemId);
+            
+            if (index > -1) {
+                userFavorites.splice(index, 1);
+                showToast('Retiré des favoris', 'success');
+            } else {
+                userFavorites.push(itemId);
+                showToast('Ajouté aux favoris', 'success');
+            }
+            
+            saveUserData();
+            updateStats();
+            return index === -1; // Retourne true si ajouté, false si retiré
+        }
+
+        function isFavorite(itemId) {
+            return userFavorites.includes(itemId);
+        }
+
+        // Gestion des notations
+        function rateItem(itemId, rating) {
+            userRatings[itemId] = rating;
+            saveUserData();
+            showToast(`Noté ${rating} étoile(s)`, 'success');
+        }
+
+        function getRating(itemId) {
+            return userRatings[itemId] || 0;
         }
 
         // Obtenir un item par son ID
@@ -1416,6 +1668,69 @@
             return data.books.find(b => b.id === itemId) ||
                    data.mangas.find(m => m.id === itemId) ||
                    data.articles.find(a => a.id === itemId);
+        }
+
+        // =============================
+        // SYSTÈME DE TOAST
+        // =============================
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle'
+            };
+
+            toast.innerHTML = `
+                <i class="${icons[type] || icons.success}"></i>
+                <span>${message}</span>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Animation d'entrée
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Suppression automatique
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // =============================
+        // GESTION DU THÈME
+        // =============================
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('muyambili_theme', newTheme);
+            updateThemeToggleIcon();
+            
+            showToast(`Mode ${newTheme === 'dark' ? 'sombre' : 'clair'} activé`);
+        }
+
+        function updateThemeToggleIcon() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const icons = document.querySelectorAll('#themeToggle i, #themeToggleMobile i');
+            const labels = document.querySelectorAll('#themeToggle span');
+            
+            icons.forEach(icon => {
+                icon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            });
+            
+            labels.forEach(label => {
+                label.textContent = currentTheme === 'dark' ? 'Mode clair' : 'Mode sombre';
+            });
         }
 
         // =============================
@@ -1642,15 +1957,27 @@
 
             items.forEach(item => {
                 const totalViews = getViews(item.id);
+                const isFav = isFavorite(item.id);
+                const rating = getRating(item.id);
+                
                 container.innerHTML += `
                     <div class="item-card" onclick="openDescription('${item.id}')">
                         <img src="${item.cover}" alt="${item.title}">
+                        <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${item.id}'); this.classList.toggle('active')">
+                            <i class="fas fa-heart"></i>
+                        </button>
                         <div class="card-content">
                             <h3>${item.title}</h3>
                             <p>${item.author}</p>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <p class="genre">${item.genre}</p>
                                 <span class="views-badge">${totalViews} vues</span>
+                            </div>
+                            <div class="rating" onclick="event.stopPropagation()">
+                                ${[1,2,3,4,5].map(star => `
+                                    <i class="fas fa-star ${star <= rating ? 'active' : ''}" 
+                                       onclick="rateItem('${item.id}', ${star})"></i>
+                                `).join('')}
                             </div>
                         </div>
                     </div>
@@ -1682,9 +2009,17 @@
             document.getElementById('descCover').src = item.cover;
             document.getElementById('descCover').alt = item.title;
 
+            const isFav = isFavorite(item.id);
+            const rating = getRating(item.id);
+
             let html = `
                 <div class="book-info">
-                    <h1>${item.title}</h1>
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <h1>${item.title}</h1>
+                        <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${item.id}'); this.classList.toggle('active')">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
                     <div class="book-meta">
                         <span><b><i class="fas fa-user"></i> Auteur :</b> ${item.author}</span>
                         <span><b><i class="fas fa-tag"></i> Genre :</b> ${item.genre}</span>
@@ -1692,6 +2027,15 @@
                     </div>
                     <div class="book-description">
                         <p>${item.description}</p>
+                    </div>
+                    <div style="margin: 20px 0;">
+                        <div class="rating">
+                            <span style="margin-right: 10px; font-weight: 600;">Votre note :</span>
+                            ${[1,2,3,4,5].map(star => `
+                                <i class="fas fa-star ${star <= rating ? 'active' : ''}" 
+                                   onclick="rateItem('${item.id}', ${star})"></i>
+                            `).join('')}
+                        </div>
                     </div>
                     <div class="book-actions">
             `;
@@ -1806,7 +2150,10 @@
 
         function addComment() {
             const input = document.getElementById("commentInput");
-            if (!input || input.value.trim() === "") return;
+            if (!input || input.value.trim() === "") {
+                showToast('Veuillez écrire un commentaire', 'warning');
+                return;
+            }
 
             currentItem.comments.unshift({
                 text: input.value,
@@ -1816,6 +2163,7 @@
             input.value = "";
             renderComments();
             updateStats();
+            showToast('Commentaire publié !');
         }
 
         // =============================
@@ -1879,20 +2227,18 @@
         }
 
         function updateStats() {
-            // Statistiques basées sur l'historique utilisateur
             const totalReads = userHistory.length;
+            const favoritesCount = userFavorites.length;
+            
             document.getElementById("totalReads").textContent = totalReads;
+            document.getElementById("favoritesCount").textContent = favoritesCount;
 
-            // Compter les commentaires totaux
             const allComments = [
                 ...data.books.flatMap(b => b.comments),
                 ...data.mangas.flatMap(m => m.comments),
                 ...data.articles.flatMap(a => a.comments)
             ];
             document.getElementById("commentsCount").textContent = allComments.length;
-
-            // Favoris basés sur l'activité
-            document.getElementById("favoritesCount").textContent = Math.floor(totalReads / 2);
         }
 
         // =============================
@@ -1950,9 +2296,24 @@
         // INITIALISATION
         // =============================
         document.addEventListener('DOMContentLoaded', function() {
-            // Charger les données
-            loadGlobalViews();
-            loadUserHistory();
+            // Cacher le splash screen après 2 secondes
+            setTimeout(() => {
+                const splashScreen = document.getElementById('splashScreen');
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                }, 500);
+            }, 2000);
+
+            // Charger les données utilisateur
+            loadUserData();
+            
+            // Événements des boutons
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+            document.getElementById('favoritesBtn').addEventListener('click', () => {
+                showToast('Fonctionnalité en développement', 'warning');
+            });
             
             // Afficher la page d'accueil
             showPage('homePage');
