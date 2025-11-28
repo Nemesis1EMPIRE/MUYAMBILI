@@ -223,6 +223,29 @@
             font-size: 1.8rem;
         }
 
+        .slide-content p {
+            margin-bottom: 20px;
+        }
+
+        .slide-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slide-btn:hover {
+            background: #ff6b4a;
+            transform: translateY(-2px);
+        }
+
         .carousel-controls {
             position: absolute;
             bottom: 20px;
@@ -468,6 +491,106 @@
             margin-top: 30px;
         }
 
+        /* Contact Page */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .contact-info {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-info h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item i {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .info-content h4 {
+            margin-bottom: 5px;
+        }
+
+        .info-content p {
+            color: var(--gray);
+        }
+
+        .contact-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .about-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-top: 40px;
+        }
+
+        .about-section h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .about-section p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
         /* Comments Section */
         .comments-section {
             margin-top: 40px;
@@ -678,6 +801,10 @@
                 flex-direction: column;
                 gap: 15px;
             }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Desktop-specific */
@@ -700,6 +827,7 @@
                 <li><a href="#" class="nav-link" data-page="booksPage"><i class="fas fa-book"></i> <span>Romans</span></a></li>
                 <li><a href="#" class="nav-link" data-page="mangaPage"><i class="fas fa-images"></i> <span>Manga</span></a></li>
                 <li><a href="#" class="nav-link" data-page="articlesPage"><i class="fas fa-newspaper"></i> <span>Articles</span></a></li>
+                <li><a href="#" class="nav-link" data-page="contactPage"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
                 <li><a href="#" class="nav-link" id="accountButton"><i class="fas fa-user"></i> <span>Mon Compte</span></a></li>
             </ul>
         </nav>
@@ -726,18 +854,27 @@
                         <div class="slide-content">
                             <h2>La Cité des Ombres</h2>
                             <p>Un roman épique dans un monde où la magie est interdite.</p>
+                            <button class="slide-btn" onclick="openDescription('b1')">
+                                <i class="fas fa-book-open"></i> Lire maintenant
+                            </button>
                         </div>
                     </div>
                     <div class="carousel-slide" style="background-image: url('https://picsum.photos/1200/600?random=2')">
                         <div class="slide-content">
                             <h2>Blade Runner X</h2>
                             <p>Un jeune guerrier cybernétique découvrant la vérité sur son passé.</p>
+                            <button class="slide-btn" onclick="openDescription('m1')">
+                                <i class="fas fa-book-open"></i> Découvrir
+                            </button>
                         </div>
                     </div>
                     <div class="carousel-slide" style="background-image: url('https://picsum.photos/1200/600?random=3')">
                         <div class="slide-content">
                             <h2>Les Secrets du Cerveau Humain</h2>
                             <p>Analyse approfondie du fonctionnement du cerveau.</p>
+                            <button class="slide-btn" onclick="openDescription('a1')">
+                                <i class="fas fa-book-open"></i> Lire l'article
+                            </button>
                         </div>
                     </div>
                     <div class="carousel-controls">
@@ -860,9 +997,88 @@
                     <button class="btn btn-outline" onclick="showPage('descriptionPage')">
                         <i class="fas fa-arrow-left"></i> Retour au livre
                     </button>
-                    <button class="btn btn-primary" onclick="downloadPDF()">
-                        <i class="fas fa-download"></i> Télécharger le PDF
-                    </button>
+                </div>
+            </section>
+
+            <!-- Contact Page -->
+            <section id="contactPage" class="page">
+                <div class="section-title">
+                    <h2>Contactez-nous</h2>
+                </div>
+
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <h3>Informations de contact</h3>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="info-content">
+                                <h4>Adresse</h4>
+                                <p>123 Avenue des Livres<br>75001 Paris, France</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-phone"></i>
+                            <div class="info-content">
+                                <h4>Téléphone</h4>
+                                <p>+33 1 23 45 67 89</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="info-content">
+                                <h4>Email</h4>
+                                <p>contact@novelhub.com</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <div class="info-content">
+                                <h4>Horaires d'ouverture</h4>
+                                <p>Lundi - Vendredi: 9h00 - 18h00<br>
+                                   Samedi: 10h00 - 17h00<br>
+                                   Dimanche: Fermé</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form">
+                        <h3>Envoyez-nous un message</h3>
+                        <form action="mailto:contact@novelhub.com" method="post" enctype="text/plain">
+                            <div class="form-group">
+                                <label for="name">Nom complet</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Adresse email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Sujet</label>
+                                <select id="subject" name="subject" required>
+                                    <option value="">Sélectionnez un sujet</option>
+                                    <option value="support">Support technique</option>
+                                    <option value="partnership">Partenariat</option>
+                                    <option value="suggestion">Suggestion</option>
+                                    <option value="bug">Signaler un bug</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Envoyer le message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="about-section">
+                    <h3>À propos de NovelHub</h3>
+                    <p>NovelHub est votre plateforme de lecture en ligne préférée, offrant une vaste collection de romans, mangas et articles scientifiques. Notre mission est de rendre la lecture accessible à tous, partout et à tout moment.</p>
+                    <p>Fondé en 2024, NovelHub s'engage à fournir une expérience de lecture exceptionnelle avec une interface intuitive, des fonctionnalités innovantes et un contenu de qualité soigneusement sélectionné.</p>
+                    <p>Rejoignez notre communauté de lecteurs passionnés et découvrez un monde de connaissances et de divertissement à portée de clic.</p>
                 </div>
             </section>
 
@@ -1039,9 +1255,6 @@
                     <div class="pdf-error">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Erreur de chargement du PDF</p>
-                        <button class="btn btn-primary" onclick="downloadPDF()">
-                            <i class="fas fa-download"></i> Télécharger à la place
-                        </button>
                     </div>
                 `;
             }
@@ -1098,17 +1311,6 @@
             if (currentScale > 0.5) {
                 currentScale -= 0.2;
                 renderPage(currentPageNum);
-            }
-        }
-
-        function downloadPDF() {
-            // Récupérer l'URL du PDF actuel
-            let pdfUrl = currentPdf ? currentPdf.loadingTask.src.url : '';
-            if (pdfUrl) {
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.download = 'document.pdf';
-                link.click();
             }
         }
 
