@@ -752,6 +752,7 @@
             box-shadow: var(--shadow);
             padding: 25px;
             margin-bottom: 25px;
+            position: relative;
         }
 
         .pdf-controls {
@@ -776,13 +777,39 @@
             font-size: 1.1rem;
         }
 
-        #pdfCanvas {
+        /* Amélioration de l'affichage PDF */
+        #pdfViewer canvas {
             border: 1px solid var(--secondary);
             max-width: 100%;
             display: block;
             margin: 0 auto;
             box-shadow: 0 4px 15px rgba(93, 64, 55, 0.1);
             border-radius: 8px;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        /* Indicateur de qualité */
+        .quality-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Amélioration de la lisibilité en mode sombre */
+        [data-theme="dark"] #pdfViewer canvas {
+            border-color: var(--gray);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .pdf-viewer-container {
+            background: var(--light);
         }
 
         .pdf-loading {
@@ -1458,6 +1485,7 @@
                 </div>
                 
                 <div class="pdf-viewer-container">
+                    <div class="quality-indicator" id="qualityIndicator">Haute Qualité</div>
                     <div class="pdf-controls">
                         <div class="pdf-nav-buttons">
                             <button class="btn btn-outline" onclick="prevPage()">
@@ -1471,11 +1499,17 @@
                             </button>
                         </div>
                         <div>
-                            <button class="btn btn-outline" onclick="zoomOut()">
+                            <button class="btn btn-outline" onclick="zoomOut()" title="Zoom arrière">
                                 <i class="fas fa-search-minus"></i>
                             </button>
-                            <button class="btn btn-outline" onclick="zoomIn()">
+                            <button class="btn btn-outline" onclick="resetZoom()" title="Zoom normal">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-outline" onclick="zoomIn()" title="Zoom avant">
                                 <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="btn btn-outline" onclick="toggleQuality()" title="Qualité d'affichage">
+                                <i class="fas fa-high"></i>
                             </button>
                         </div>
                     </div>
@@ -1633,8 +1667,9 @@
         // Variables pour la gestion PDF
         let currentPdf = null;
         let currentPageNum = 1;
-        let currentScale = 1.2;
+        let currentScale = 1.5; // Augmenté pour une meilleure lisibilité par défaut
         let pdfLoadingTask = null;
+        let highQualityMode = true; // Qualité haute par défaut
 
         // =============================
         // SYSTÈME DE VUES GLOBALES
@@ -2044,7 +2079,7 @@
                 document.getElementById('pdfViewer').innerHTML = `
                     <div class="pdf-loading">
                         <i class="fas fa-spinner fa-spin"></i>
-                        <p>Chargement du PDF...</p>
+                        <p>Chargement du PDF en haute qualité...</p>
                         <div style="margin-top: 15px;">
                             <button class="btn btn-outline" onclick="cancelPdfLoading(); showPage('descriptionPage')">
                                 <i class="fas fa-times"></i> Annuler
@@ -2086,32 +2121,42 @@
             }
         }
 
-        // Rendu de page optimisé
+        // Rendu de page haute qualité
         async function renderPage(pageNum) {
             if (!currentPdf) return;
 
             try {
                 const page = await currentPdf.getPage(pageNum);
                 
-                // Ajustement automatique de l'échelle pour s'adapter à l'écran
+                // Ajustement de l'échelle pour une meilleure qualité
                 const container = document.getElementById('pdfViewer');
-                const containerWidth = container.clientWidth - 40; // 40px de padding
+                const containerWidth = container.clientWidth - 40;
                 
                 const viewport = page.getViewport({ scale: 1 });
-                const scale = Math.min(currentScale, containerWidth / viewport.width);
+                
+                // Augmenter la résolution pour réduire le flou
+                const pixelRatio = highQualityMode ? (window.devicePixelRatio || 1) : 1;
+                const scale = Math.min(currentScale * pixelRatio, (containerWidth / viewport.width) * pixelRatio);
                 const scaledViewport = page.getViewport({ scale: scale });
                 
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
-                canvas.height = scaledViewport.height;
-                canvas.width = scaledViewport.width;
                 
-                // Indicateur de progression
+                // Configuration haute résolution
+                canvas.height = Math.floor(scaledViewport.height);
+                canvas.width = Math.floor(scaledViewport.width);
+                canvas.style.height = `${scaledViewport.height / pixelRatio}px`;
+                canvas.style.width = `${scaledViewport.width / pixelRatio}px`;
+                
+                // Améliorer la qualité du rendu
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
+                
                 const progressDiv = document.createElement('div');
                 progressDiv.className = 'pdf-loading';
                 progressDiv.innerHTML = `
                     <i class="fas fa-spinner fa-spin"></i>
-                    <p>Chargement de la page ${pageNum}...</p>
+                    <p>Chargement de la page ${pageNum} en haute qualité...</p>
                 `;
                 
                 container.innerHTML = '';
@@ -2119,7 +2164,9 @@
                 
                 const renderContext = {
                     canvasContext: context,
-                    viewport: scaledViewport
+                    viewport: scaledViewport,
+                    enableWebGL: true, // Activer l'accélération matérielle
+                    intent: 'display' // Optimiser pour l'affichage
                 };
                 
                 await page.render(renderContext).promise;
@@ -2155,15 +2202,37 @@
         }
 
         function zoomIn() {
-            currentScale += 0.2;
-            renderPage(currentPageNum);
+            if (currentScale < 3.0) { // Limiter le zoom maximum
+                currentScale += 0.2;
+                renderPage(currentPageNum);
+                showToast(`Zoom: ${Math.round(currentScale * 100)}%`);
+            }
         }
 
         function zoomOut() {
             if (currentScale > 0.5) {
                 currentScale -= 0.2;
                 renderPage(currentPageNum);
+                showToast(`Zoom: ${Math.round(currentScale * 100)}%`);
             }
+        }
+
+        // Ajouter un reset du zoom
+        function resetZoom() {
+            currentScale = 1.5; // Valeur par défaut légèrement augmentée
+            renderPage(currentPageNum);
+            showToast('Zoom réinitialisé');
+        }
+
+        // Mode haute qualité
+        function toggleQuality() {
+            highQualityMode = !highQualityMode;
+            const indicator = document.getElementById('qualityIndicator');
+            if (indicator) {
+                indicator.textContent = highQualityMode ? 'Haute Qualité' : 'Performance';
+            }
+            showToast(highQualityMode ? 'Mode haute qualité activé' : 'Mode performance activé');
+            renderPage(currentPageNum); // Re-rendre avec les nouveaux paramètres
         }
 
         // =============================
