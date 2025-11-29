@@ -40,7 +40,7 @@
         }
 
         body {
-            background: linear-gradient(rgba(248, 244, 240, 0.9), rgba(248, 244, 240, 0.9));
+            background: linear-gradient(rgba(248, 244, 240, 0.9), rgba(248, 244, 240, 0.9)), url('assets/images/background.png');
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
@@ -50,7 +50,7 @@
         }
 
         [data-theme="dark"] body {
-            background: linear-gradient(rgba(45, 45, 45, 0.9), rgba(45, 45, 45, 0.9));
+            background: linear-gradient(rgba(45, 45, 45, 0.9), rgba(45, 45, 45, 0.9)), url('assets/images/background.png');
         }
 
         /* Splash Screen */
@@ -752,7 +752,6 @@
             box-shadow: var(--shadow);
             padding: 25px;
             margin-bottom: 25px;
-            overflow: auto;
         }
 
         .pdf-controls {
@@ -763,15 +762,12 @@
             padding: 20px;
             background: var(--light);
             border-radius: 8px;
-            flex-wrap: wrap;
-            gap: 15px;
         }
 
         .pdf-nav-buttons {
             display: flex;
             gap: 15px;
             align-items: center;
-            flex-wrap: wrap;
         }
 
         .page-info {
@@ -1313,16 +1309,16 @@
                 
                 <!-- Hero Carousel -->
                 <div class="hero-carousel">
-                    <div class="hero-slide active" style="background: linear-gradient(135deg, var(--primary), var(--accent))">
+                    <div class="hero-slide active" style="background-image: url('assets/images/plume.png')">
                         <div class="hero-content">
-                            <h2>La Cité des Ombres</h2>
-                            <p>Plongez dans un monde épique où la magie est interdite et les secrets anciens refont surface.</p>
+                            <h2>Plumes Brûlées</h2>
+                            <p>Les plus belles citations d'amour viennent de ceux qui ne l'ont jamais connu.</p>
                             <button class="hero-btn" onclick="openDescription('b1')">
                                 <i class="fas fa-book-open"></i> Commencer la lecture
                             </button>
                         </div>
                     </div>
-                    <div class="hero-slide" style="background: linear-gradient(135deg, #8c7259, #a78a6f)">
+                    <div class="hero-slide" style="background-image: url('https://picsum.photos/1200/600?random=2')">
                         <div class="hero-content">
                             <h2>Blade Runner X</h2>
                             <p>Un cyberpunk haletant dans un Tokyo futuriste où humains et androides se confrontent.</p>
@@ -1331,7 +1327,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="hero-slide" style="background: linear-gradient(135deg, #7cb342, #f9a825)">
+                    <div class="hero-slide" style="background-image: url('https://picsum.photos/1200/600?random=3')">
                         <div class="hero-content">
                             <h2>Les Secrets du Cerveau</h2>
                             <p>Explorez les mystères de l'esprit humain avec les dernières découvertes en neurosciences.</p>
@@ -1481,9 +1477,6 @@
                             <button class="btn btn-outline" onclick="zoomIn()">
                                 <i class="fas fa-search-plus"></i>
                             </button>
-                            <button class="btn btn-outline" onclick="fitToWidth()">
-                                <i class="fas fa-arrows-alt-h"></i>
-                            </button>
                         </div>
                     </div>
                     
@@ -1515,14 +1508,14 @@
                             <i class="fas fa-map-marker-alt"></i>
                             <div class="info-content">
                                 <h4>Adresse</h4>
-                                <p>123 Avenue des Livres<br>75001 Paris, France</p>
+                                <p>Amissa<br>Akanda, Gabon</p>
                             </div>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-phone"></i>
                             <div class="info-content">
                                 <h4>Téléphone</h4>
-                                <p>+33 1 23 45 67 89</p>
+                                <p>+241 74 67 58 14</p>
                             </div>
                         </div>
                         <div class="info-item">
@@ -1535,7 +1528,7 @@
                         <div class="info-item">
                             <i class="fas fa-clock"></i>
                             <div class="info-content">
-                                <h4>Horaires d'ouverture</h4>
+                                <h4>Horaires service client</h4>
                                 <p>Lundi - Vendredi: 9h00 - 18h00<br>
                                    Samedi: 10h00 - 17h00<br>
                                    Dimanche: Fermé</p>
@@ -1545,7 +1538,7 @@
 
                     <div class="contact-form">
                         <h3>Envoyez-nous un message</h3>
-                        <form id="contactForm">
+                        <form action="mailto:contact@muyambili.com" method="post" enctype="text/plain">
                             <div class="form-group">
                                 <label for="name">Nom complet</label>
                                 <input type="text" id="name" name="name" required>
@@ -1579,7 +1572,7 @@
                 <div class="about-section">
                     <h3>À propos de MUYAMBILI</h3>
                     <p>MUYAMBILI est votre plateforme de lecture en ligne préférée, offrant une vaste collection de romans, mangas et articles scientifiques. Notre mission est de rendre la lecture accessible à tous, partout et à tout moment.</p>
-                    <p>Fondé en 2024, MUYAMBILI s'engage à fournir une expérience de lecture exceptionnelle avec une interface intuitive, des fonctionnalités innovantes et un contenu de qualité soigneusement sélectionné.</p>
+                    <p>MUYAMBILI, qui signifie "conteur" en Nzebi, est la première plateforme numérique dédiée à la littérature gabonaise. Nous transformons la riche tradition orale africaine en expérience de lecture digitale.</p>
                     <p>Rejoignez notre communauté de lecteurs passionnés et découvrez un monde de connaissances et de divertissement à portée de clic.</p>
                 </div>
             </section>
@@ -1640,7 +1633,7 @@
         // Variables pour la gestion PDF
         let currentPdf = null;
         let currentPageNum = 1;
-        let currentScale = 1.5; // Échelle initiale augmentée pour meilleure lisibilité
+        let currentScale = 1.2;
         let pdfLoadingTask = null;
 
         // =============================
@@ -1954,20 +1947,15 @@
             books: [
                 {
                     id: "b1",
-                    title: "La Cité des Ombres",
-                    author: "Amara T.",
-                    genre: "Fantaisie",
-                    cover: "https://picsum.photos/300/400?random=1",
-                    description: "Un roman épique dans un monde où la magie est interdite. Suivez l'histoire d'Elara, une jeune femme découvrant ses pouvoirs dans une société oppressive. Entre complots politiques et quêtes personnelles, ce récit vous transportera dans un univers riche et complexe.",
+                    title: "Plumes Brûlées",
+                    author: "Dr DOOM",
+                    genre: "Poésie",
+                    cover: "assets/images/plume.png",
+                    description: "Alfred de Musset, Louis Aragon, Albert Camus, Victor Hugo, de grands amoureux de l'amour mais qui ne l'ont jamais connu. Dans leurs écrits, ils présentaient l'amour comme quelque chose de magique entre deux personnes, mais leurs vies...",
                     chapters: [
-                        { title: "Chapitre 1: L'Éveil", pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
-                        { title: "Chapitre 2: La Forêt Interdite", pdf: "https://www.africau.edu/images/default/sample.pdf" },
-                        { title: "Chapitre 3: La Rencontre", pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" }
+                        { title: "Poème", pdf: "assets/images/plume.pdf" }
                     ],
-                    comments: [
-                        { text: "Captivant dès le premier chapitre ! L'univers est incroyablement bien construit.", date: "2024-01-15 14:30" },
-                        { text: "J'adore l'univers fantasy et les personnages sont très attachants.", date: "2024-01-16 09:15" }
-                    ]
+                    comments: []
                 },
                 {
                     id: "b2",
@@ -2098,7 +2086,7 @@
             }
         }
 
-        // Rendu de page optimisé pour la netteté
+        // Rendu de page optimisé
         async function renderPage(pageNum) {
             if (!currentPdf) return;
 
@@ -2111,19 +2099,12 @@
                 
                 const viewport = page.getViewport({ scale: 1 });
                 const scale = Math.min(currentScale, containerWidth / viewport.width);
-                
-                // Créer un viewport avec une résolution plus élevée pour la netteté
-                const outputScale = window.devicePixelRatio || 1;
-                const scaledViewport = page.getViewport({ scale: scale * outputScale });
+                const scaledViewport = page.getViewport({ scale: scale });
                 
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
-                
-                // Ajuster la taille du canvas pour la haute résolution
-                canvas.width = Math.floor(scaledViewport.width);
-                canvas.height = Math.floor(scaledViewport.height);
-                canvas.style.width = Math.floor(scaledViewport.width / outputScale) + 'px';
-                canvas.style.height = Math.floor(scaledViewport.height / outputScale) + 'px';
+                canvas.height = scaledViewport.height;
+                canvas.width = scaledViewport.width;
                 
                 // Indicateur de progression
                 const progressDiv = document.createElement('div');
@@ -2138,8 +2119,7 @@
                 
                 const renderContext = {
                     canvasContext: context,
-                    viewport: scaledViewport,
-                    transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null
+                    viewport: scaledViewport
                 };
                 
                 await page.render(renderContext).promise;
@@ -2184,19 +2164,6 @@
                 currentScale -= 0.2;
                 renderPage(currentPageNum);
             }
-        }
-
-        function fitToWidth() {
-            if (!currentPdf) return;
-            
-            const container = document.getElementById('pdfViewer');
-            const containerWidth = container.clientWidth - 40;
-            
-            currentPdf.getPage(currentPageNum).then(page => {
-                const viewport = page.getViewport({ scale: 1 });
-                currentScale = containerWidth / viewport.width;
-                renderPage(currentPageNum);
-            });
         }
 
         // =============================
@@ -2622,13 +2589,6 @@
                 tab.addEventListener('click', () => {
                     switchLibraryTab(tab.dataset.tab);
                 });
-            });
-            
-            // Formulaire de contact
-            document.getElementById('contactForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                showToast('Message envoyé avec succès!', 'success');
-                this.reset();
             });
             
             // Afficher la page d'accueil
