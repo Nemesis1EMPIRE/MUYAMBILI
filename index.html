@@ -966,8 +966,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(45deg, #f5f5f5 25%, #e8e8e8 25%, #e8e8e8 50%, #f5f5f5 50%, #f5f5f5 75%, #e8e8e8 75%);
-            background-size: 40px 40px;
+            background: #f5f5f5;
             border-radius: 8px;
             border: 2px solid var(--secondary);
             overflow: auto;
@@ -975,20 +974,11 @@
         }
 
         /* Canvas optimisé pour le mode rapide */
-        .pdf-canvas-container {
-            position: relative;
-            margin: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
         #pdfCanvas {
             display: block;
             max-width: 100%;
             height: auto;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             background: white;
         }
 
@@ -1547,9 +1537,9 @@
                     </div>
                     
                     <div id="pdfViewer">
-                        <div class="pdf-loading">
+                        <div class="pdf-loading" id="pdfLoading">
                             <i class="fas fa-spinner fa-spin"></i>
-                            <p>Préparation du lecteur PDF...</p>
+                            <p>Chargement rapide du PDF...</p>
                             <div class="pdf-progress">
                                 <div class="pdf-progress-bar" id="pdfProgressBar"></div>
                             </div>
@@ -1640,9 +1630,7 @@
         // Variables PDF optimisées
         let currentPdf = null;
         let currentPageNum = 1;
-        let currentScale = 1.0; // Échelle par défaut pour chargement rapide
-        let pdfLoadingTask = null;
-        let isRendering = false;
+        let currentScale = 1.0;
 
         // =============================
         // GESTION DE L'AUTHENTIFICATION
@@ -1915,7 +1903,7 @@
         });
         
         // =============================
-        // LECTEUR PDF OPTIMISÉ - MODE RAPIDE UNIQUEMENT
+        // LECTEUR PDF ULTRA RAPIDE
         // =============================
         
         async function openChapter(itemId, chapterIndex) {
@@ -1947,78 +1935,45 @@
             localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
             
             document.getElementById('readerTitle').textContent = `${item.title} - ${item.chapters[chapterIndex].title}`;
-            await loadPDF(item.chapters[chapterIndex].pdf);
+            
+            // Afficher immédiatement la page de lecture
             showPage('readerPage');
+            
+            // Charger le PDF en arrière-plan
+            setTimeout(() => loadPDF(item.chapters[chapterIndex].pdf), 100);
         }
         
         async function loadPDF(url) {
             try {
                 // Nettoyer l'état précédent
-                if (pdfLoadingTask) {
-                    pdfLoadingTask.destroy();
-                }
-                
                 if (currentPdf) {
-                    currentPdf.destroy();
+                    try {
+                        currentPdf.destroy();
+                    } catch (e) {}
                     currentPdf = null;
                 }
                 
-                // Afficher l'interface de chargement
-                document.getElementById('pdfViewer').innerHTML = `
-                    <div class="pdf-loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Chargement rapide du PDF...</p>
-                        <div class="pdf-progress">
-                            <div class="pdfProgressBar" class="pdf-progress-bar"></div>
-                        </div>
-                        <p id="pdfLoadingText">Initialisation...</p>
-                    </div>
-                `;
+                showToast('Chargement du PDF...', 'success');
                 
-                showToast('Chargement du PDF en cours...', 'success');
-                
-                // Configuration optimisée pour le mode rapide uniquement
-                pdfLoadingTask = pdfjsLib.getDocument({
+                // Configuration ultra simplifiée pour vitesse maximale
+                const loadingTask = pdfjsLib.getDocument({
                     url: url,
-                    cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
-                    cMapPacked: true,
                     disableAutoFetch: false,
-                    disableStream: true, // Stream désactivé pour chargement rapide
+                    disableStream: false,
                     disableRange: false,
                     enableXfa: false
                 });
                 
-                // Suivi de progression simplifié
-                pdfLoadingTask.onProgress = function(progressData) {
-                    const progress = progressData.loaded ? Math.round((progressData.loaded / progressData.total) * 100) : 0;
-                    const progressBar = document.getElementById('pdfProgressBar');
-                    const loadingText = document.getElementById('pdfLoadingText');
-                    
-                    if (progressBar) {
-                        progressBar.style.width = progress + '%';
-                    }
-                    
-                    if (loadingText) {
-                        loadingText.textContent = `Chargement: ${progress}%`;
-                    }
-                };
-                
-                // Chargement avec timeout court
-                const loadPromise = pdfLoadingTask.promise;
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error('Timeout de chargement PDF')), 5000);
-                });
-                
-                currentPdf = await Promise.race([loadPromise, timeoutPromise]);
-                pdfLoadingTask = null;
+                // Pas de timeout, laisser charger naturellement
+                currentPdf = await loadingTask.promise;
                 
                 document.getElementById('pageCount').textContent = currentPdf.numPages;
                 currentPageNum = 1;
                 
-                // Rendu rapide de la première page
+                // Rendu immédiat de la première page
                 await renderPage(currentPageNum);
                 
-                showToast('PDF chargé avec succès', 'success');
+                showToast('PDF chargé', 'success');
                 
             } catch (error) {
                 console.error('Erreur de chargement PDF:', error);
@@ -2026,7 +1981,7 @@
                     <div class="pdf-error">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Erreur de chargement du PDF</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">${error.message || 'Impossible de charger le fichier PDF'}</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Veuillez vérifier que le fichier PDF existe</p>
                         <div style="margin-top: 15px;">
                             <button class="btn btn-primary" onclick="showPage('descriptionPage')">
                                 <i class="fas fa-arrow-left"></i> Retour
@@ -2039,59 +1994,45 @@
         }
         
         async function renderPage(pageNum) {
-            if (!currentPdf || isRendering) return;
-            
-            isRendering = true;
+            if (!currentPdf) return;
             
             try {
                 const page = await currentPdf.getPage(pageNum);
                 const container = document.getElementById('pdfViewer');
                 const containerWidth = container.clientWidth - 80;
                 
-                // Calcul d'échelle optimisé pour rapidité
+                // Calcul d'échelle simplifié
                 const viewport = page.getViewport({ scale: 1 });
                 let scale = Math.min(currentScale, containerWidth / viewport.width);
                 
                 const scaledViewport = page.getViewport({ scale: scale });
                 
-                // Création du canvas simplifié
-                const canvasContainer = document.createElement('div');
-                canvasContainer.className = 'pdf-canvas-container';
-                canvasContainer.style.width = `${scaledViewport.width}px`;
-                canvasContainer.style.height = `${scaledViewport.height}px`;
-                
+                // Création du canvas directe
                 const canvas = document.createElement('canvas');
                 canvas.id = 'pdfCanvas';
                 const context = canvas.getContext('2d');
                 
-                // Configuration minimaliste pour rapidité
                 canvas.height = scaledViewport.height;
                 canvas.width = scaledViewport.width;
-                canvas.style.height = `${scaledViewport.height}px`;
-                canvas.style.width = `${scaledViewport.width}px`;
-                
-                // Désactiver le lissage pour vitesse
-                context.imageSmoothingEnabled = false;
                 
                 const renderContext = {
                     canvasContext: context,
-                    viewport: scaledViewport,
-                    enableWebGL: false, // WebGL désactivé pour plus de compatibilité
-                    intent: 'display',
-                    renderInteractiveForms: false
+                    viewport: scaledViewport
                 };
+                
+                // Masquer l'indicateur de chargement
+                const loadingElement = document.getElementById('pdfLoading');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
                 
                 await page.render(renderContext).promise;
                 
                 // Affichage final
-                canvasContainer.appendChild(canvas);
                 container.innerHTML = '';
-                container.appendChild(canvasContainer);
+                container.appendChild(canvas);
                 
                 document.getElementById('pageNum').textContent = pageNum;
-                
-                // Nettoyer la mémoire immédiatement
-                page.cleanup();
                 
             } catch (error) {
                 console.error('Erreur de rendu de page:', error);
@@ -2104,8 +2045,6 @@
                         </button>
                     </div>
                 `;
-            } finally {
-                isRendering = false;
             }
         }
         
@@ -2159,7 +2098,6 @@
                 currentScale = Math.round(currentScale * 10) / 10;
                 renderPage(currentPageNum);
                 showToast(`Adapté à la largeur: ${Math.round(currentScale * 100)}%`);
-                page.cleanup();
             });
         }
         
@@ -2639,7 +2577,7 @@
                 setTimeout(() => {
                     splashScreen.style.display = 'none';
                 }, 500);
-            }, 2000);
+            }, 1000); // Réduit à 1 seconde
             
             loadCurrentUser();
             
@@ -2677,7 +2615,7 @@
             if (currentUser) {
                 setTimeout(() => {
                     showToast(`Bon retour, ${currentUser.username} !`, 'success');
-                }, 1000);
+                }, 500);
             }
         });
     </script>
