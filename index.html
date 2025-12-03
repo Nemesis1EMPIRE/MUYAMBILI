@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUYAMBILI - Plumes Brûlées</title>
+    <title>MUYAMBILI - Plateforme de Lecture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     
     <!-- Protection contre l'inspection du code -->
     <script>
-    // Protection avancée du code source
     (function() {
         // Bloquer toutes les tentatives d'accès au code source
         document.addEventListener('contextmenu', function(e) {
@@ -19,7 +18,6 @@
         
         // Bloquer les raccourcis clavier
         document.addEventListener('keydown', function(e) {
-            // Liste des raccourcis à bloquer
             const blockedKeys = [
                 {key: 'F12', code: 123},
                 {key: 'I', code: 73, ctrl: true, shift: true},
@@ -35,7 +33,6 @@
                     e.preventDefault();
                     showToast(`Accès au code source désactivé`, 'warning');
                     
-                    // Rediriger vers l'accueil après tentative
                     setTimeout(() => {
                         if (window.location.hash !== '#homePage') {
                             window.location.href = '#';
@@ -588,31 +585,6 @@
             text-align: center;
         }
 
-        /* Contenu protégé */
-        .protected-content {
-            text-align: center;
-            padding: 50px 20px;
-        }
-
-        .protected-content i {
-            font-size: 4rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .protected-content h3 {
-            margin-bottom: 15px;
-            color: var(--dark);
-        }
-
-        .protected-content p {
-            color: var(--gray);
-            margin-bottom: 25px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
         /* Hero Carousel */
         .hero-carousel {
             position: relative;
@@ -1110,6 +1082,75 @@
             box-shadow: var(--shadow);
         }
 
+        /* Bibliothèque */
+        .library-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .library-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .library-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .library-tab:hover {
+            color: var(--dark);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .history-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--secondary);
+            background: white;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            border-left: 4px solid var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
         /* Media Queries pour le responsive */
         @media (max-width: 768px) {
             .app-container {
@@ -1206,94 +1247,6 @@
             .mobile-only {
                 display: none;
             }
-        }
-
-        /* Bibliothèque */
-        .library-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--secondary);
-        }
-
-        .library-tab {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: var(--gray);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-        }
-
-        .library-tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .library-tab:hover {
-            color: var(--dark);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .history-item {
-            padding: 20px;
-            border-bottom: 1px solid var(--secondary);
-            background: white;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .history-item:hover {
-            transform: translateX(5px);
-            border-left: 4px solid var(--primary);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--gray);
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-        
-        /* Message "Aucun contenu" */
-        .no-content {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--gray);
-            grid-column: 1 / -1;
-        }
-        
-        .no-content i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-        
-        .no-content h3 {
-            margin-bottom: 10px;
-            color: var(--dark);
         }
     </style>
 </head>
@@ -1434,22 +1387,16 @@
                             </button>
                         </div>
                     </div>
-                    <div class="hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/images/plume.png')">
+                    <div class="hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://picsum.photos/1200/600?random=2')">
                         <div class="hero-content">
-                            <h2>Plumes Brûlées</h2>
-                            <p>Un recueil de poésie qui explore les paradoxes de l'amour.</p>
-                            <button class="btn btn-primary" onclick="openDescription('b1')">
-                                <i class="fas fa-book-open"></i> Découvrir
-                            </button>
+                            <h2>À venir</h2>
+                            <p>Découvrez bientôt de nouveaux contenus exclusifs.</p>
                         </div>
                     </div>
-                    <div class="hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/images/plume.png')">
+                    <div class="hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://picsum.photos/1200/600?random=3')">
                         <div class="hero-content">
-                            <h2>Plumes Brûlées</h2>
-                            <p>La poésie au cœur des émotions humaines.</p>
-                            <button class="btn btn-primary" onclick="openDescription('b1')">
-                                <i class="fas fa-book-open"></i> Commencer la lecture
-                            </button>
+                            <h2>Prochainement</h2>
+                            <p>Restez connectés pour plus de lectures passionnantes.</p>
                         </div>
                     </div>
                     
@@ -1470,25 +1417,19 @@
                     <h2>Romans en Vedette</h2>
                     <a href="#" class="view-all" data-page="booksPage">Voir Tout</a>
                 </div>
-                <div class="content-grid" id="booksList">
-                    <!-- Seul "Plumes Brûlées" sera affiché -->
-                </div>
+                <div class="content-grid" id="booksList"></div>
 
                 <div class="section-title">
                     <h2>Mangas Populaires</h2>
                     <a href="#" class="view-all" data-page="mangaPage">Voir Tout</a>
                 </div>
-                <div class="content-grid" id="mangaList">
-                    <!-- Aucun manga ne sera affiché -->
-                </div>
+                <div class="content-grid" id="mangaList"></div>
 
                 <div class="section-title">
                     <h2>Articles Récents</h2>
                     <a href="#" class="view-all" data-page="articlesPage">Voir Tout</a>
                 </div>
-                <div class="content-grid" id="articlesList">
-                    <!-- Aucun article ne sera affiché -->
-                </div>
+                <div class="content-grid" id="articlesList"></div>
             </section>
 
             <!-- Books Page -->
@@ -1496,9 +1437,7 @@
                 <div class="section-title">
                     <h2>Tous les Romans</h2>
                 </div>
-                <div class="content-grid" id="booksPageList">
-                    <!-- Seul "Plumes Brûlées" sera affiché -->
-                </div>
+                <div class="content-grid" id="booksPageList"></div>
             </section>
 
             <!-- Manga Page -->
@@ -1506,9 +1445,7 @@
                 <div class="section-title">
                     <h2>Tous les Mangas</h2>
                 </div>
-                <div class="content-grid" id="mangaPageList">
-                    <!-- Aucun manga ne sera affiché -->
-                </div>
+                <div class="content-grid" id="mangaPageList"></div>
             </section>
 
             <!-- Articles Page -->
@@ -1516,9 +1453,7 @@
                 <div class="section-title">
                     <h2>Tous les Articles</h2>
                 </div>
-                <div class="content-grid" id="articlesPageList">
-                    <!-- Aucun article ne sera affiché -->
-                </div>
+                <div class="content-grid" id="articlesPageList"></div>
             </section>
 
             <!-- Library Page -->
@@ -1526,7 +1461,7 @@
                 <div class="section-title">
                     <h2>Ma Bibliothèque</h2>
                 </div>
-                <div class="protected-content" id="libraryContent">
+                <div class="library-content" id="libraryContent">
                     <!-- Rempli dynamiquement selon l'état de connexion -->
                 </div>
             </section>
@@ -1708,12 +1643,13 @@
                 id: Date.now().toString(),
                 username: username,
                 email: email,
-                password: btoa(password), // Chiffrement basique
+                password: btoa(password),
                 createdAt: new Date().toISOString(),
                 favorites: [],
                 ratings: {},
                 history: [],
-                views: {}
+                // Système de vues unique: chaque utilisateur a ses propres vues
+                uniqueViews: {} // {itemId: true} pour marquer les vues uniques
             };
             
             users.push(newUser);
@@ -1735,7 +1671,7 @@
             }
             
             currentUser = { ...user };
-            delete currentUser.password; // Ne pas stocker le mot de passe en clair
+            delete currentUser.password;
             localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
             
             updateUserInterface();
@@ -1757,7 +1693,6 @@
             const userMenuContent = document.getElementById('userMenuContent');
             
             if (currentUser) {
-                // Utilisateur connecté
                 userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
                 userAvatar.style.backgroundColor = getColorFromName(currentUser.username);
                 
@@ -1769,15 +1704,11 @@
                     <a href="#" class="user-menu-item" onclick="showPage('libraryPage'); toggleUserMenu()">
                         <i class="fas fa-heart"></i> Mes favoris
                     </a>
-                    <a href="#" class="user-menu-item" onclick="showAccount(); toggleUserMenu()">
-                        <i class="fas fa-user"></i> Mon compte
-                    </a>
                     <a href="#" class="user-menu-item" onclick="logout(); toggleUserMenu()">
                         <i class="fas fa-sign-out-alt"></i> Déconnexion
                     </a>
                 `;
             } else {
-                // Utilisateur non connecté
                 userAvatar.textContent = 'V';
                 userAvatar.style.backgroundColor = 'var(--accent)';
                 
@@ -1795,7 +1726,6 @@
                 `;
             }
             
-            // Mettre à jour le contenu protégé
             updateProtectedContent();
         }
         
@@ -1804,6 +1734,32 @@
             const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2', '#EF476F', '#7209B7', '#3A86FF'];
             const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
             return colors[hash % colors.length];
+        }
+        
+        // =============================
+        // SYSTÈME DE VUES UNIQUE
+        // =============================
+        
+        function hasUserViewed(itemId) {
+            if (!currentUser) return false;
+            return currentUser.uniqueViews && currentUser.uniqueViews[itemId] === true;
+        }
+        
+        function markAsViewed(itemId) {
+            if (!currentUser) return false;
+            
+            if (!currentUser.uniqueViews) {
+                currentUser.uniqueViews = {};
+            }
+            
+            // Si l'utilisateur n'a pas encore vu cet item
+            if (!currentUser.uniqueViews[itemId]) {
+                currentUser.uniqueViews[itemId] = true;
+                localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
+                return true; // Nouvelle vue
+            }
+            
+            return false; // Déjà vu
         }
         
         // =============================
@@ -1916,7 +1872,6 @@
         // =============================
         
         function updateProtectedContent() {
-            // Bibliothèque
             const libraryContent = document.getElementById('libraryContent');
             if (libraryContent) {
                 if (currentUser) {
@@ -1937,7 +1892,7 @@
                     setupLibraryTabs();
                 } else {
                     libraryContent.innerHTML = `
-                        <div class="protected-content">
+                        <div class="empty-state">
                             <i class="fas fa-lock"></i>
                             <h3>Contenu Réservé aux Membres</h3>
                             <p>Connectez-vous pour accéder à votre bibliothèque personnelle, vos favoris et votre historique de lecture.</p>
@@ -1977,14 +1932,49 @@
                     description: "Alfred de Musset, Louis Aragon, Albert Camus, Victor Hugo, de grands amoureux de l'amour mais qui ne l'ont jamais connu. Dans leurs écrits, ils présentaient l'amour comme quelque chose de magique entre deux personnes, mais leurs vies...",
                     chapters: [
                         { title: "Poème", pdf: "assets/images/plume.pdf" }
-                    ],
-                    comments: []
+                    ]
                 }
             ],
-            // Pas de mangas
-            mangas: [],
-            // Pas d'articles
-            articles: []
+            mangas: [
+                {
+                    id: "m1",
+                    title: "Bientôt disponible",
+                    author: "MUYAMBILI",
+                    genre: "À venir",
+                    cover: "https://picsum.photos/300/400?random=2",
+                    description: "De nouveaux mangas arrivent bientôt sur la plateforme.",
+                    chapters: []
+                },
+                {
+                    id: "m2",
+                    title: "Prochainement",
+                    author: "MUYAMBILI",
+                    genre: "À venir",
+                    cover: "https://picsum.photos/300/400?random=5",
+                    description: "Restez connectés pour découvrir nos prochaines sorties.",
+                    chapters: []
+                }
+            ],
+            articles: [
+                {
+                    id: "a1",
+                    title: "À venir",
+                    author: "MUYAMBILI",
+                    genre: "Information",
+                    cover: "https://picsum.photos/300/400?random=3",
+                    description: "Des articles passionnants arrivent prochainement.",
+                    pdf: ""
+                },
+                {
+                    id: "a2",
+                    title: "Bientôt",
+                    author: "MUYAMBILI",
+                    genre: "Information",
+                    cover: "https://picsum.photos/300/400?random=6",
+                    description: "Préparez-vous à découvrir du contenu exclusif.",
+                    pdf: ""
+                }
+            ]
         };
         
         // =============================
@@ -1996,20 +1986,10 @@
             if (!container) return;
             
             container.innerHTML = '';
-            
-            if (items.length === 0) {
-                container.innerHTML = `
-                    <div class="no-content">
-                        <i class="fas fa-book"></i>
-                        <h3>Aucun contenu disponible</h3>
-                        <p>D'autres contenus seront bientôt ajoutés.</p>
-                    </div>
-                `;
-                return;
-            }
-            
             items.forEach(item => {
-                const views = currentUser ? (currentUser.views[item.id] || 0) : 0;
+                // Chaque utilisateur voit seulement s'IL a vu (1 vue max)
+                const hasViewed = currentUser ? hasUserViewed(item.id) : false;
+                const viewCount = hasViewed ? 1 : 0;
                 const isFavorite = currentUser ? currentUser.favorites.includes(item.id) : false;
                 const rating = currentUser ? (currentUser.ratings[item.id] || 0) : 0;
                 
@@ -2025,7 +2005,7 @@
                             <p>${item.author}</p>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <p class="genre">${item.genre}</p>
-                                <span class="views-badge">${views} vues</span>
+                                <span class="views-badge">${viewCount} vue${viewCount > 1 ? 's' : ''}</span>
                             </div>
                             ${currentUser ? `
                                 <div class="rating" onclick="event.stopPropagation()">
@@ -2042,23 +2022,26 @@
         }
         
         function openDescription(itemId) {
-            const item = data.books.find(b => b.id === itemId) ||
-                         data.mangas.find(m => m.id === itemId) ||
-                         data.articles.find(a => a.id === itemId);
+            let item = data.books.find(b => b.id === itemId) ||
+                       data.mangas.find(m => m.id === itemId) ||
+                       data.articles.find(a => a.id === itemId);
             
             if (!item) return;
+            
+            // Marquer comme vu SI l'utilisateur est connecté
+            const isNewView = currentUser ? markAsViewed(itemId) : false;
             
             document.getElementById('descCover').src = item.cover;
             document.getElementById('descCover').alt = item.title;
             
+            const hasViewed = currentUser ? hasUserViewed(item.id) : false;
+            const viewCount = hasViewed ? 1 : 0;
             const isFavorite = currentUser ? currentUser.favorites.includes(item.id) : false;
             const rating = currentUser ? (currentUser.ratings[item.id] || 0) : 0;
-            const views = currentUser ? (currentUser.views[item.id] || 0) : 0;
             
             let chaptersHtml = '';
-            if (item.chapters) {
+            if (item.chapters && item.chapters.length > 0) {
                 item.chapters.forEach((chapter, index) => {
-                    const chapterViews = currentUser ? (currentUser.views[`${item.id}_${index}`] || 0) : 0;
                     const canRead = currentUser ? true : false;
                     
                     chaptersHtml += `
@@ -2069,7 +2052,7 @@
                                 ${chapter.title}
                                 ${!canRead ? '<i class="fas fa-lock lock-icon"></i>' : ''}
                             </span>
-                            <span class="chapter-views">${chapterViews} vues</span>
+                            <span class="chapter-views">${viewCount} vue${viewCount > 1 ? 's' : ''}</span>
                         </button>
                     `;
                 });
@@ -2089,7 +2072,7 @@
                     <div class="book-meta">
                         <span><i class="fas fa-user"></i> ${item.author}</span>
                         <span><i class="fas fa-tag"></i> ${item.genre}</span>
-                        <span><i class="fas fa-eye"></i> ${views} vues</span>
+                        <span><i class="fas fa-eye"></i> ${viewCount} vue${viewCount > 1 ? 's' : ''}</span>
                     </div>
                     <div class="book-description">
                         <p>${item.description}</p>
@@ -2106,7 +2089,7 @@
                         </div>
                     ` : ''}
                 </div>
-                ${item.chapters ? `
+                ${item.chapters && item.chapters.length > 0 ? `
                     <div class="chapters-section">
                         <h2><i class="fas fa-list-ol"></i> Chapitres</h2>
                         ${chaptersHtml}
@@ -2124,16 +2107,12 @@
         async function openChapter(itemId, chapterIndex) {
             if (!requireAuth()) return;
             
-            const item = data.books.find(b => b.id === itemId) ||
-                         data.mangas.find(m => m.id === itemId);
+            const item = data.books.find(b => b.id === itemId);
             
             if (!item || !item.chapters[chapterIndex]) return;
             
-            // Enregistrer la lecture dans l'historique
+            // Marquer comme vu dans l'historique
             if (currentUser) {
-                const chapterKey = `${itemId}_${chapterIndex}`;
-                currentUser.views[chapterKey] = (currentUser.views[chapterKey] || 0) + 1;
-                
                 currentUser.history.unshift({
                     itemId: itemId,
                     chapterIndex: chapterIndex,
@@ -2141,7 +2120,6 @@
                     timestamp: new Date().toISOString()
                 });
                 
-                // Garder seulement les 50 dernières lectures
                 if (currentUser.history.length > 50) {
                     currentUser.history = currentUser.history.slice(0, 50);
                 }
@@ -2163,7 +2141,6 @@
                     </div>
                 `;
 
-                // Annuler tout chargement précédent
                 if (pdfLoadingTask) {
                     pdfLoadingTask.destroy();
                 }
@@ -2291,7 +2268,6 @@
             localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
             updateUserInterface();
             
-            // Mettre à jour l'affichage actuel
             const favoriteBtn = event.target.closest('.favorite-btn');
             if (favoriteBtn) {
                 favoriteBtn.classList.toggle('active');
@@ -2306,13 +2282,19 @@
             data.books.forEach(book => {
                 if (currentUser.favorites.includes(book.id)) favoriteItems.push(book);
             });
+            data.mangas.forEach(manga => {
+                if (currentUser.favorites.includes(manga.id)) favoriteItems.push(manga);
+            });
+            data.articles.forEach(article => {
+                if (currentUser.favorites.includes(article.id)) favoriteItems.push(article);
+            });
             
             if (favoriteItems.length === 0) {
                 container.innerHTML = `
-                    <div class="no-content">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--gray);">
                         <i class="fas fa-heart" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
                         <h3>Aucun favori</h3>
-                        <p>Ajoutez "Plumes Brûlées" à vos favoris pour le retrouver ici.</p>
+                        <p>Ajoutez des contenus à vos favoris pour les retrouver ici.</p>
                     </div>
                 `;
                 return;
@@ -2320,8 +2302,9 @@
             
             container.innerHTML = '';
             favoriteItems.forEach(item => {
+                const hasViewed = hasUserViewed(item.id);
+                const viewCount = hasViewed ? 1 : 0;
                 const rating = currentUser.ratings[item.id] || 0;
-                const views = currentUser.views[item.id] || 0;
                 
                 container.innerHTML += `
                     <div class="item-card" onclick="openDescription('${item.id}')">
@@ -2334,7 +2317,7 @@
                             <p>${item.author}</p>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <p class="genre">${item.genre}</p>
-                                <span class="views-badge">${views} vues</span>
+                                <span class="views-badge">${viewCount} vue${viewCount > 1 ? 's' : ''}</span>
                             </div>
                             <div class="rating" onclick="event.stopPropagation()">
                                 ${[1,2,3,4,5].map(star => `
@@ -2365,7 +2348,9 @@
             
             container.innerHTML = '';
             currentUser.history.forEach(entry => {
-                const item = data.books.find(b => b.id === entry.itemId);
+                const item = data.books.find(b => b.id === entry.itemId) ||
+                             data.mangas.find(m => m.id === entry.itemId) ||
+                             data.articles.find(a => a.id === entry.itemId);
                 
                 if (item) {
                     const date = new Date(entry.timestamp);
@@ -2411,7 +2396,6 @@
             localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
             showToast(`Noté ${rating} étoile(s)`, 'success');
             
-            // Mettre à jour l'affichage
             const stars = event.target.parentElement.querySelectorAll('.fa-star');
             stars.forEach((star, index) => {
                 star.classList.toggle('active', index < rating);
@@ -2423,26 +2407,21 @@
         // =============================
         
         function showPage(pageId) {
-            // Fermer le menu utilisateur
             const menu = document.getElementById('userMenu');
             if (menu) menu.classList.remove('active');
             
-            // Cacher toutes les pages
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             
-            // Désactiver tous les liens de navigation
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
             });
             
-            // Activer la page demandée
             const page = document.getElementById(pageId);
             if (page) {
                 page.classList.add('active');
                 
-                // Activer le lien correspondant dans la navigation
                 const navLink = document.querySelector(`[data-page="${pageId}"]`);
                 if (navLink) {
                     navLink.classList.add('active');
@@ -2460,6 +2439,8 @@
                 renderList('mangaPageList', data.mangas);
             } else if (pageId === 'articlesPage') {
                 renderList('articlesPageList', data.articles);
+            } else if (pageId === 'libraryPage') {
+                updateProtectedContent();
             }
         }
         
@@ -2469,7 +2450,6 @@
                 e.preventDefault();
                 const pageId = link.dataset.page;
                 
-                // Vérifier l'authentification pour les pages protégées
                 if (pageId === 'libraryPage' && !currentUser) {
                     showAuthModal('login');
                     return;
@@ -2495,7 +2475,6 @@
                 return;
             }
             
-            // Filtrer les résultats
             const allItems = [...data.books, ...data.mangas, ...data.articles];
             const results = allItems.filter(item => 
                 item.title.toLowerCase().includes(query) ||
@@ -2503,15 +2482,14 @@
                 item.genre.toLowerCase().includes(query)
             );
             
-            // Afficher les résultats
             const resultsContainer = document.getElementById('searchResults');
             if (resultsContainer) {
                 if (results.length > 0) {
                     renderList('searchResults', results);
                 } else {
                     resultsContainer.innerHTML = `
-                        <div class="no-content">
-                            <i class="fas fa-search"></i>
+                        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--gray);">
+                            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
                             <h3>Aucun résultat</h3>
                             <p>Aucun contenu ne correspond à votre recherche.</p>
                         </div>
@@ -2630,7 +2608,6 @@
         // =============================
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Cacher le splash screen
             setTimeout(() => {
                 const splashScreen = document.getElementById('splashScreen');
                 splashScreen.style.opacity = '0';
@@ -2639,17 +2616,14 @@
                 }, 500);
             }, 2000);
             
-            // Charger l'utilisateur
             loadCurrentUser();
             
-            // Charger le thème
             const savedTheme = localStorage.getItem('muyambili_theme');
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
             }
             updateThemeIcon();
             
-            // Événements
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
             
@@ -2661,24 +2635,20 @@
                 }
             });
             
-            // Initialiser les onglets d'authentification
             document.querySelectorAll('.auth-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     switchAuthTab(tab.dataset.tab);
                 });
             });
             
-            // Contact form
             document.getElementById('contactForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 showToast('Message envoyé avec succès !', 'success');
                 this.reset();
             });
             
-            // Afficher la page d'accueil
             showPage('homePage');
             
-            // Message de bienvenue
             if (currentUser) {
                 setTimeout(() => {
                     showToast(`Bon retour, ${currentUser.username} !`, 'success');
