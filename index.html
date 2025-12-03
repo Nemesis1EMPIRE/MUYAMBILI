@@ -973,13 +973,15 @@
             position: relative;
         }
 
-        /* Canvas optimisé pour le mode rapide */
+        /* Canvas haute qualité */
         #pdfCanvas {
             display: block;
             max-width: 100%;
             height: auto;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             background: white;
+            image-rendering: crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
         }
 
         .reading-controls {
@@ -1539,7 +1541,7 @@
                     <div id="pdfViewer">
                         <div class="pdf-loading" id="pdfLoading">
                             <i class="fas fa-spinner fa-spin"></i>
-                            <p>Chargement rapide du PDF...</p>
+                            <p>Chargement du PDF...</p>
                             <div class="pdf-progress">
                                 <div class="pdf-progress-bar" id="pdfProgressBar"></div>
                             </div>
@@ -1624,13 +1626,13 @@
     </div>
 
     <script>
-        // Configuration PDF.js optimisée pour le mode rapide uniquement
+        // Configuration PDF.js optimisée
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // Variables PDF optimisées
+        // Variables PDF
         let currentPdf = null;
         let currentPageNum = 1;
-        let currentScale = 1.0;
+        let currentScale = 1.2; // Échelle augmentée pour meilleure lisibilité
 
         // =============================
         // GESTION DE L'AUTHENTIFICATION
@@ -1903,7 +1905,7 @@
         });
         
         // =============================
-        // LECTEUR PDF ULTRA RAPIDE
+        // LECTEUR PDF HAUTE QUALITÉ
         // =============================
         
         async function openChapter(itemId, chapterIndex) {
@@ -1953,27 +1955,28 @@
                     currentPdf = null;
                 }
                 
-                showToast('Chargement du PDF...', 'success');
+                showToast('Chargement du PDF en cours...', 'success');
                 
-                // Configuration ultra simplifiée pour vitesse maximale
+                // Configuration pour qualité optimale
                 const loadingTask = pdfjsLib.getDocument({
                     url: url,
+                    cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
+                    cMapPacked: true,
                     disableAutoFetch: false,
                     disableStream: false,
                     disableRange: false,
                     enableXfa: false
                 });
                 
-                // Pas de timeout, laisser charger naturellement
                 currentPdf = await loadingTask.promise;
                 
                 document.getElementById('pageCount').textContent = currentPdf.numPages;
                 currentPageNum = 1;
                 
-                // Rendu immédiat de la première page
+                // Rendu de la première page
                 await renderPage(currentPageNum);
                 
-                showToast('PDF chargé', 'success');
+                showToast('PDF chargé avec succès', 'success');
                 
             } catch (error) {
                 console.error('Erreur de chargement PDF:', error);
@@ -1981,7 +1984,7 @@
                     <div class="pdf-error">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Erreur de chargement du PDF</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Veuillez vérifier que le fichier PDF existe</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Veuillez vérifier que le fichier PDF existe à l'adresse: assets/images/plume.pdf</p>
                         <div style="margin-top: 15px;">
                             <button class="btn btn-primary" onclick="showPage('descriptionPage')">
                                 <i class="fas fa-arrow-left"></i> Retour
@@ -2001,23 +2004,37 @@
                 const container = document.getElementById('pdfViewer');
                 const containerWidth = container.clientWidth - 80;
                 
-                // Calcul d'échelle simplifié
+                // Calcul d'échelle avec qualité optimale
                 const viewport = page.getViewport({ scale: 1 });
                 let scale = Math.min(currentScale, containerWidth / viewport.width);
                 
+                // Utiliser le devicePixelRatio pour un rendu net
+                const pixelRatio = window.devicePixelRatio || 1;
+                scale = scale * pixelRatio;
+                
                 const scaledViewport = page.getViewport({ scale: scale });
                 
-                // Création du canvas directe
+                // Création du canvas avec haute qualité
                 const canvas = document.createElement('canvas');
                 canvas.id = 'pdfCanvas';
-                const context = canvas.getContext('2d');
+                const context = canvas.getContext('2d', { alpha: false });
                 
-                canvas.height = scaledViewport.height;
-                canvas.width = scaledViewport.width;
+                // Configuration haute qualité
+                canvas.height = Math.floor(scaledViewport.height);
+                canvas.width = Math.floor(scaledViewport.width);
+                canvas.style.height = Math.floor(scaledViewport.height / pixelRatio) + 'px';
+                canvas.style.width = Math.floor(scaledViewport.width / pixelRatio) + 'px';
+                
+                // Amélioration de la qualité de rendu
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
                 
                 const renderContext = {
                     canvasContext: context,
-                    viewport: scaledViewport
+                    viewport: scaledViewport,
+                    enableWebGL: true, // WebGL activé pour meilleure performance
+                    intent: 'display',
+                    renderInteractiveForms: false
                 };
                 
                 // Masquer l'indicateur de chargement
@@ -2072,7 +2089,7 @@
         }
         
         function zoomOut() {
-            if (currentScale > 0.3) {
+            if (currentScale > 0.5) {
                 currentScale -= 0.2;
                 currentScale = Math.round(currentScale * 10) / 10;
                 renderPage(currentPageNum);
@@ -2081,9 +2098,9 @@
         }
         
         function resetZoom() {
-            currentScale = 1.0;
+            currentScale = 1.2; // 120% par défaut pour meilleure lisibilité
             renderPage(currentPageNum);
-            showToast('Zoom réinitialisé à 100%');
+            showToast('Zoom réinitialisé à 120%');
         }
         
         function fitToWidth() {
@@ -2577,7 +2594,7 @@
                 setTimeout(() => {
                     splashScreen.style.display = 'none';
                 }, 500);
-            }, 1000); // Réduit à 1 seconde
+            }, 1000);
             
             loadCurrentUser();
             
